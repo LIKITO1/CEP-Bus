@@ -1,5 +1,6 @@
-import {View,TextInput,Text,Button,StyleSheet} from "react-native"
+import {View,TextInput,Text,Button} from "react-native"
 import {useNavigation} from '@react-navigation/native'
+import {styles} from "../styles/loginStyles"
 export default function Login() {
   const navigation=useNavigation()
   function home(){
@@ -26,46 +27,3 @@ export default function Login() {
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container:{
-    width:"100%",
-    height:"100%",
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"center"
-  },
-  form:{
-    width:"100%",
-    height:"60%",
-    borderWidth:1,
-    borderColor:"black",
-    borderBottomEndRadius:"30px",
-    borderBottomStartRadius:"30px",
-    display:"flex",
-    justifyContent:"center",
-    alignItems:"center",
-    zIndex:1
-  },
-  baixo:{
-    height:"40%",
-    width:"100%",
-    display:"flex",
-    alignItems:"center",
-    justifyContent:"end"
-  },
-  text:{
-    padding:"10px",
-    borderWidth:1,
-    borderColor:"black",
-    width:"70%"
-  },
-  linha:{
-    display:"flex",
-    flexDirection:"row",
-    gap:"30px"
-  },
-  titulo:{
-    fontWeight:"bold",
-    fontSize:"20px"
-  }
-});

@@ -1,8 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {Pressable,StyleSheet,Text} from "react-native"
+import {useNavigation} from "@react-navigation/native"
 export default function PerfilIcon(){
+  const navigation=useNavigation()
   function perfil(){
-    
+    navigation.navigate('Perfil')
   }
   return(
     <Pressable onPress={perfil} style={styles.container}>

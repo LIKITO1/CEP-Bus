@@ -17,7 +17,7 @@ const styles=StyleSheet.create({
   container:{
     flex:1,
     width:'100%',
-    height:'13%',
+    height:'10%',
     display:"flex",
     flexDirection:"row",
     alignItems:'center',

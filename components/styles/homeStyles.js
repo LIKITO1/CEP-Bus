@@ -1,0 +1,36 @@
+import {StyleSheet} from "react-native"
+export const styles=StyleSheet.create({
+    container:{
+        backgroundColor:'white'
+    },
+    containerOne:{
+        backgroundColor:'white',
+        width:'100%',
+        height:'10%',
+        display:'flex',
+        justifyContent:'space-between',
+        flexDirection:'row',
+        padding:8
+    },
+    containerTwo:{
+        height:'30%',
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    text:{
+        fontSize:23,
+        fontWeight:'bold'
+    },
+    subtext:{
+        fontSize:15,
+        fontWeight:'semibold',
+        color:'gray'
+    },
+    input:{
+        borderWidth:1,
+        borderColor:'black',
+        width:'80%',
+        height:'17%'
+    }
+})
