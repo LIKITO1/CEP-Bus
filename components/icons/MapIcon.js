@@ -1,16 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {TouchableOpacity,StyleSheet,Text,View} from "react-native"
 import {useNavigation} from "@react-navigation/native"
-export default function RoutesIcon(){
+export default function MapIcon(){
   const navigation=useNavigation()
-  function routes(){
-    navigation.navigate('Route')
+  function map(){
+    navigation.navigate('Map')
   }
   return(
     <View>
-    <TouchableOpacity onPress={routes} style={styles.container}>
+    <TouchableOpacity onPress={map} style={styles.container}>
       <Ionicons name="map-outline" size={24} color="black" />
-      <Text style={styles.text}>Rotas</Text>
+      <Text style={styles.text}>Mapa</Text>
     </TouchableOpacity>
   </View>
   )

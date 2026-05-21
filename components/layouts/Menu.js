@@ -1,13 +1,13 @@
 import {View,Text,StyleSheet} from "react-native"
 import HomeIcon from "../icons/HomeIcon"
 import PerfilIcon from "../icons/PerfilIcon"
-import RoutesIcon from "../icons/RoutesIcon"
+import MapIcon from "../icons/MapIcon"
 import FavoritesIcon from "../icons/FavoritesIcon"
 export default function Menu(){
   return (
     <View style={styles.container}>
       <HomeIcon/>
-      <RoutesIcon/>
+      <MapIcon/>
       <FavoritesIcon/>
       <PerfilIcon/>
     </View>
