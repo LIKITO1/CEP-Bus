@@ -5,6 +5,7 @@ import {styles} from "../styles/perfilStyles"
 import SettingIcon from "../icons/SettingIcon"
 import {useState} from "react"
 import { useNavigation } from "@react-navigation/native"
+import { SafeAreaView } from "react-native-safe-area-context"
 export default function Perfil(){
   const [username,setUsername]=useState('Lucas Oliveira')
   const [email,setEmail]=useState('lucas@gmail.com')
@@ -22,6 +23,7 @@ export default function Perfil(){
     console.log("Notificação")
   }
   return (
+    <SafeAreaView style={{flex:1}}>
     <View style={globalStyles.container}>
       <View style={styles.bloco1}>
         <Text style={styles.title}>Meu Perfil</Text>
@@ -52,5 +54,6 @@ export default function Perfil(){
       </View>
     <Menu/>
     </View>
+    </SafeAreaView>
   )
 }

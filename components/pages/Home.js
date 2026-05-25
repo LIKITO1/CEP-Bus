@@ -4,14 +4,38 @@ import { globalStyles } from "../styles/globalStyles"
 import {styles} from "../styles/homeStyles"
 import {useState} from "react"
 import NotificationIcon from "../icons/NotificationIcon"
-import { Button, TextInput } from "react-native-web"
+import { Button, TextInput } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { buscarCep } from "../../services/viacep"
+import { buscarCoordenadas } from "../../services/geocode"
+import { useNavigation } from "@react-navigation/native"
+import { distancia } from "../../services/distancia"
+import { buscarClima } from "../../services/weather"
 export default function Home(){
-  const [nameUser,setNameUser]=useState("Lucas")
-  const [line,setLine]=useState("544")
-  const [point1,setPoint1]=useState("Terminal Central")
-  const [point2,setPoint2]=useState("Jardim Ámérica")
-  const [time,setTime]=useState("8 min")
+  const [nameUser,setNameUser]=useState("Admin")
+  const [cep,setCep]=useState("")
+  const [coords,setCoords]=useState(null)
+  const navigation=useNavigation()
+  function digitar(e){
+    const numeros=e.replace(/[^0-9]/g,"")
+    setCep(numeros)
+  }
+  async function buscaCep(){
+    const res=await buscarCep(cep)
+    const enderecoCompleto=res.logradouro+" "+res.localidade+" "+res.uf
+    const coordenadas=await buscarCoordenadas(enderecoCompleto)
+    const latitude=coordenadas[0].lat
+    const longitude=coordenadas[0].lon
+    setCoords({
+      latitude:String(latitude),
+      longitude:String(longitude)
+    })
+    const pontos=await distancia(latitude,longitude)
+    const temp=await buscarClima(latitude,longitude)
+    navigation.navigate("Map",{latitude,longitude,pontos,temperatura:temp})
+  }
   return(
+    <SafeAreaView style={{flex:1}}>
     <View style={[globalStyles.container,styles.container]}>
       <View style={styles.containerOne}>
         <View>
@@ -21,26 +45,16 @@ export default function Home(){
         <NotificationIcon/>
       </View>
       <View style={styles.containerTwo}>
-        <Text style={styles.text}>Informe seu CEP</Text>
-        <Text style={styles.subtext}>Vamos calcular a melhor rota para você</Text>
-        <TextInput style={styles.input}/>
-        <Button title='Calcular Rota'/>
+        <Text style={styles.text}>Informe o CEP</Text>
+        <Text style={styles.subtext}>Vamos mostrar os pontos de ônibus próximos</Text>
+        <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep}/>
+        <Button title='Mostrar no mapa' onPress={buscaCep}/>
       </View>
-      <View style={styles.containerThree}>
-        <Text style={styles.text}>Sua Rota</Text>
-        <Text style={styles.subtext}>Confira o trajeto próximo e os horários</Text>
-      </View>
-      <View style={styles.containerFour}>
-        <View style={styles.line}>
-          <Text>Linha {line}</Text>
-          <Text>{point1}{">"}{point2}</Text>
-        </View>
-        <View style={styles.nextBus}>
-          <Text>Próximo Ônibus:</Text>
-          <Text>{time}</Text>
-        </View>
+      <View>
+        <Text style={styles.text}>Pesquisas recentes:</Text>
       </View>
       <Menu/>
     </View>
+    </SafeAreaView>
   )
 }

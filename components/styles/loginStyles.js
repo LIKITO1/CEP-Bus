@@ -39,6 +39,6 @@ export const styles = StyleSheet.create({
     },
     titulo:{
       fontWeight:"bold",
-      fontSize:"20px"
+      fontSize:20
     }
   });

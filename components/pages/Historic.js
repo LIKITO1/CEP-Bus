@@ -1,8 +1,11 @@
-import {View,StyleSheet,Text} from "react-native"
+import {View,Text} from "react-native"
 import ArrowLeftIcon from "../icons/ArrowLeftIcon"
 import Menu from "../layouts/Menu"
+import {styles} from "../styles/historicStyles"
+import { SafeAreaView } from "react-native-safe-area-context"
 export default function Historic(){
     return(
+        <SafeAreaView style={{flex:1}}>
         <View style={styles.container}>
             <View style={styles.top}>
                 <ArrowLeftIcon/>
@@ -11,33 +14,6 @@ export default function Historic(){
             </View>
             <Menu/>
         </View>
+        </SafeAreaView>
     )
 }
-const styles=StyleSheet.create({
-    container:{
-        flex:1
-    },
-    top:{
-        position:'absolute',
-        top:0,
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-around',
-        width:'100%',
-        alignItems:'center',
-        height:'8%'
-    },
-    text:{
-        fontWeight:500,
-        fontSize:20
-    },
-    symbols:{
-        fontSize:30,
-        fontWeight:'bold'
-    },
-    clear:{
-        color:'blue',
-        fontWeight:500,
-        fontSize:14
-    }
-})

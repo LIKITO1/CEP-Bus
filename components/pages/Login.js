@@ -1,12 +1,14 @@
 import {View,TextInput,Text,Button} from "react-native"
 import {useNavigation} from '@react-navigation/native'
 import {styles} from "../styles/loginStyles"
+import { SafeAreaView } from "react-native-safe-area-context"
 export default function Login() {
   const navigation=useNavigation()
   function home(){
     navigation.navigate('Home')
   }
   return (
+    <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
       <View style={styles.form}>
         <Text style={styles.titulo}>Bem-Vindo de Volta</Text>
@@ -25,5 +27,6 @@ export default function Login() {
         <Text>Encontre paradas próximas e chegue no horário certo</Text>
       </View>
     </View>
+    </SafeAreaView>
   );
 }

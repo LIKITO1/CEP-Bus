@@ -1,0 +1,29 @@
+import { StyleSheet } from "react-native"
+export const styles=StyleSheet.create({
+    container:{
+        flex:1
+    },
+    top:{
+        position:'absolute',
+        top:0,
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-around',
+        width:'100%',
+        alignItems:'center',
+        height:'8%'
+    },
+    text:{
+        fontWeight:500,
+        fontSize:20
+    },
+    symbols:{
+        fontSize:30,
+        fontWeight:'bold'
+    },
+    clear:{
+        color:'blue',
+        fontWeight:500,
+        fontSize:14
+    }
+})
