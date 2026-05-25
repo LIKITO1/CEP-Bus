@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { buscarCep } from "../../services/viacep"
 import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
-import { distancia } from "../../services/distancia"
+import { buscarParadas } from "../../services/paradas"
 import { buscarClima } from "../../services/weather"
 export default function Home(){
   const [nameUser,setNameUser]=useState("Admin")
@@ -30,7 +30,7 @@ export default function Home(){
       latitude:String(latitude),
       longitude:String(longitude)
     })
-    const pontos=await distancia(latitude,longitude)
+    const pontos=await buscarParadas(latitude,longitude)
     const temp=await buscarClima(latitude,longitude)
     navigation.navigate("Map",{latitude,longitude,pontos,temperatura:temp})
   }

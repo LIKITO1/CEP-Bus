@@ -1,6 +1,5 @@
-import "leaflet-defaulticon-compatibility"
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
 import "leaflet/dist/leaflet.css"
+import L from "leaflet"
 import {View,Text,TouchableOpacity} from "react-native"
 import Menu from "../layouts/Menu"
 import {styles} from "../styles/mapStyles"
@@ -9,12 +8,39 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import {MapContainer,TileLayer,Marker,Popup,Circle} from "react-leaflet"
 import * as Location from 'expo-location'
 import {useEffect,useState,useRef} from "react"
+import Loading from "../layouts/Loading"
+const markerIcon = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png"
+const markerIcon2x = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png"
+const markerShadow = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png"
+delete L.Icon.Default.prototype._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+})
+const roxo = L.icon({
+  iconUrl:"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+  shadowUrl:"https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize:[25,41],
+  iconAnchor:[12,41]
+})
+const amarelo = L.icon({
+  iconUrl:"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+  shadowUrl:"https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize:[25,41],
+  iconAnchor:[12,41]
+})
 export default function Map({route}){
   const [location,setLocation]=useState(null)
   const [locationCEP,setLocationCEP]=useState(null)
-  const [pontos,setPontos]=useState(null)
+  const [pontos,setPontos]=useState([])
   const [temperatura,setTemperatura]=useState(null)
   const mapRef=useRef(null)
+  const latitudeCEP=locationCEP?.latitude || null
+  const longitudeCEP=locationCEP?.longitude || null
+  const latitudeMapa = latitudeCEP || location?.latitude
+  const longitudeMapa = longitudeCEP || location?.longitude
+  const carregando = latitudeMapa == null || longitudeMapa == null
   function centralizar(){
     if(location){
     mapRef.current.setView([
@@ -50,60 +76,57 @@ export default function Map({route}){
     pegarPosition()
     verificaParams()
   },[])
-  if(!locationCEP&&!location){
-    return(
-      <Text>Carregando...</Text>
-    )
-  }
   return(
     <SafeAreaView style={{flex:1}}>
       <View style={globalStyles.container}>
+        {!carregando&&(
+          <>
       <MapContainer ref={mapRef}
-        style={{height:"100vh",width:"100%"}}
+        style={{height:"90%",width:"100%"}}
         center={[
-          locationCEP? locationCEP.latitude:location.latitude,
-          locationCEP?locationCEP.longitude:location.longitude,
+          latitudeMapa,
+          longitudeMapa,
         ]}
         zoom={18}>
         <TileLayer attribution="OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-        {location&&(
+        {location!=null&&(
         <Marker
           position={[
             location.latitude,
-            location.longitude,
+            location.longitude
           ]}>
             <Popup>Você</Popup>
         </Marker>
         )}
-        {locationCEP&&(
+        {locationCEP!=null&&(
           <>
             <Marker position={[
-              locationCEP.latitude,
-              locationCEP.longitude
-            ]}>
+              latitudeCEP,
+              longitudeCEP
+            ]} icon={roxo}>
                 <Popup>CEP digitado</Popup>
             </Marker>
             <Circle center={[
-              locationCEP.latitude,
-              locationCEP.longitude
-            ]} radius={200} weight={0} fillColor="rgba(0,122,255,0.2)"/>
+              latitudeCEP,
+              longitudeCEP
+            ]} radius={300} weight={0} fillColor="rgba(0,122,255,0.5)"/>
           </>
         )}
-        {pontos&&(
+        {(Array.isArray(pontos)&&pontos.length>0)&&(
           pontos.map((valor)=>(
-            <Marker key={valor.stop_id} position={[
-              Number(valor.stop_lat),
-              Number(valor.stop_lon)
-            ]}>
-                <Popup>{valor.stop_name}</Popup>
+            <Marker key={valor.id} position={[
+              valor.lat,
+              valor.lon
+            ]} icon={amarelo}>
+                <Popup>{valor.tags?.name||"Ponto de ônibus"}</Popup>
             </Marker>
           ))
         )}
       </MapContainer>
-      <TouchableOpacity onPress={centralizar} style={styles.btn}>
+      <TouchableOpacity onPress={centralizar} style={[styles.btn,{backgroundColor:'#B5B5B5'}]}>
         <Text style={styles.textoBtn}>Onde estou?</Text>
       </TouchableOpacity>
-      {locationCEP&(
+      {(latitudeCEP!=null&&longitudeCEP!=null)&&(
       <TouchableOpacity onPress={centralizarCEP} style={styles.btn1}>
         <Text style={styles.textoBtn}>CEP que digitei</Text>
       </TouchableOpacity>
@@ -113,7 +136,12 @@ export default function Map({route}){
           <Text style={styles.temp}>Temperatura:{temperatura}°C</Text>
         </View>
       )}
+      </>
+    )}
       <Menu/>
+      {carregando&&(
+        <Loading/>
+      )}
       </View>
     </SafeAreaView>
   )
