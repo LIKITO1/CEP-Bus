@@ -16,7 +16,7 @@ export default function App(){
         Login:'',
         Home:'home',
         Perfil:'perfil',
-        Map:'map',
+        Map:'map/:latitude/:longitude',
         Favorite:'favorite',
         Frequent:'frequent'
       }

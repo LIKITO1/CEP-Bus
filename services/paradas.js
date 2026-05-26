@@ -12,6 +12,6 @@ export async function buscarParadas(latitude,longitude){
         body: query
       }
     )
-    const data = await response.json()
-    return data.elements
+    const res = await response.json()
+    return res.elements
   }
