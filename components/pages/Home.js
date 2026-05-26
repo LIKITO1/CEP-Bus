@@ -9,6 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { buscarCep } from "../../services/viacep"
 import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
+import CepIcon from "../icons/CepIcon"
 export default function Home(){
   const [nameUser,setNameUser]=useState("Admin")
   const [cep,setCep]=useState("")
@@ -41,9 +42,10 @@ export default function Home(){
         <NotificationIcon/>
       </View>
       <View style={styles.containerTwo}>
+        <CepIcon/>
         <Text style={styles.text}>Informe o CEP</Text>
         <Text style={styles.subtext}>Vamos mostrar os pontos de ônibus próximos</Text>
-        <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep}/>
+        <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep} placeholder="Digite o CEP..."/>
         <Button title='Mostrar no mapa' onPress={buscaCep}/>
       </View>
       <View>

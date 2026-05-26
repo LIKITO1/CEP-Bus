@@ -7,6 +7,7 @@ import Map from "./components/pages/Map"
 import Favorite from "./components/pages/Favorite"
 import FrequentLocals from './components/pages/FrequentLocals';
 import Historic from './components/pages/Historic';
+import Cadastro from './components/pages/Cadastro';
 const Stack=createNativeStackNavigator()
 export default function App(){
   const linking={
@@ -18,7 +19,8 @@ export default function App(){
         Perfil:'perfil',
         Map:'map/:latitude/:longitude',
         Favorite:'favorite',
-        Frequent:'frequent'
+        Frequent:'frequent',
+        Cadastro:'cadastro'
       }
     }
   }
@@ -32,6 +34,7 @@ export default function App(){
         <Stack.Screen name='Favorite' component={Favorite}/>
         <Stack.Screen name='Frequent' component={FrequentLocals}/>
         <Stack.Screen name='Historic' component={Historic}/>
+        <Stack.Screen name='Cadastro' component={Cadastro}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

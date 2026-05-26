@@ -1,5 +1,11 @@
 export async function buscarClima(latitude,longitude){
-    const response=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code`)
+    const response=await fetch("https://backend-cep-bus.onrender.com/clima",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({latitude,longitude})
+    })
     const res=await response.json()
-    return res.current.temperature_2m
+    console.log(res)
 }

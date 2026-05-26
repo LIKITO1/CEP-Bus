@@ -9,34 +9,27 @@ import OpenEyeIcon from "../icons/OpenEyeIcon"
 import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-export default function Login() {
+export default function Cadastro() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [email,setEmail]=useState("")
   const [senha,setSenha]=useState("")
-  async function logar(){
+  async function cadastrar(){
     const emailArm=await AsyncStorage.getItem("email")
-    const senhaArm=await AsyncStorage.getItem("senha")
-    if(emailArm&&senhaArm){
-      if(email==emailArm){
-        if(senha==senhaArm){
-          console.log("Logado com sucesso")
-        }else{
-          console.log("Senha incorreta")
-        }
-      }else{
-        return;
-      }
+    if((emailArm&&emailArm==email)||email=="admin@gmail.com"){
+        console.log("Este email já esta sendo utilizado")
     }else{
-      if(email=="admin@gmail.com"){
-        if(senha=="admin"){
-          console.log("Logado com sucesso")
+        if(email.includes("@gmail.com")||email.includes("@outlook.com")||email.includes("@faacgedu.org.br")){
+            if(senha.length>=3){
+                await AsyncStorage.setItem("email",email)
+                await AsyncStorage.setItem("senha",senha)
+                navigation.navigate("Home")
+            }else{
+                console.log("Sua senha deve possuir mais de 3 caracteres")
+            }
         }else{
-          console.log("Senha incorreta")
+            console.log("Email inválido")
         }
-      }else{
-        console.log("Email inválido")
-      }
     }
   }
   function verSenha(){
@@ -46,15 +39,15 @@ export default function Login() {
       setMostrarSenha(true)
     }
   }
-  function redirectCadastro(){
-    navigation.navigate("Cadastro")
+  function redirectLogar(){
+    navigation.navigate("Login")
   }
   return (
     <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
       <View style={styles.form}>
-        <Text style={styles.titulo}>Bem-Vindo de Volta</Text>
-        <Text style={styles.subtext}>Faça login para continuar</Text>
+        <Text style={styles.titulo}>Seja Bem Vindo</Text>
+        <Text style={styles.subtext}>Realize o cadastro para acessar a plataforma</Text>
         <View style={styles.dados}>
           <TextInput placeholder="Digite seu email..." keyboardType="email-address" style={styles.textInput} onChangeText={setEmail}/>
           <PersonIcon styles={styles.iconPerson}/>
@@ -69,17 +62,13 @@ export default function Login() {
               <ClosedEyeIcon styles={styles.eye} onPress={verSenha}/>
           )}
         </View>
-        <View style={styles.linha}>
-          <Text>Lembrar-me</Text>
-          <Text>Esqueceu a senha?</Text>
-        </View>
-        <TouchableOpacity onPress={logar} style={{width:'80%'}}>
+        <TouchableOpacity onPress={cadastrar} style={{width:'80%'}}>
           <LinearGradient colors={['#4843F5','#51CAF3']} start={{x:0,y:1}} style={{borderRadius:10,marginTop:10}}>
-            <Text style={styles.btnLogin}>Fazer Login</Text>
+            <Text style={styles.btnLogin}>Cadastrar</Text>
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={{width:'100%'}}>
-          <Text style={styles.btnConta} onPress={redirectCadastro}>Não tenho conta? <Text style={{color:'blue',fontWeight:600}}>Cadastre-se</Text></Text>
+          <Text style={styles.btnConta} onPress={redirectLogar}>Já tem conta?<Text style={{color:'blue',fontWeight:600}}>&nbsp;Efetuar login</Text></Text>
         </TouchableOpacity>
       </View>
       <View style={styles.baixo}>

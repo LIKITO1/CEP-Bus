@@ -31,11 +31,6 @@ export const styles = StyleSheet.create({
       outlineStyle:'none',
       marginVertical:5
     },
-    linha:{
-      display:"flex",
-      flexDirection:"row",
-      gap:30
-    },
     titulo:{
       fontWeight:"bold",
       fontSize:25
