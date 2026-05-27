@@ -83,7 +83,7 @@ export default function Map({route}){
       })
       pontosComDistancia.sort((a,b)=>a.distancia-b.distancia)
       setPontos(pontosComDistancia)
-      setTemperatura(temperatura)
+      setTemperatura(temperatura.temperatura)
       setLocationCEP({latitude:Number(latitude),longitude:Number(longitude)})
     }
   }

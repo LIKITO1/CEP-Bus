@@ -8,19 +8,21 @@ import {useState} from "react"
 import OpenEyeIcon from "../icons/OpenEyeIcon"
 import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
+import Checkbox from "expo-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function Login() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [email,setEmail]=useState("")
   const [senha,setSenha]=useState("")
+  const [check,setCheck]=useState(false)
   async function logar(){
     const emailArm=await AsyncStorage.getItem("email")
     const senhaArm=await AsyncStorage.getItem("senha")
     if(emailArm&&senhaArm){
       if(email==emailArm){
         if(senha==senhaArm){
-          console.log("Logado com sucesso")
+          navigation.navigate("Home")
         }else{
           console.log("Senha incorreta")
         }
@@ -30,7 +32,7 @@ export default function Login() {
     }else{
       if(email=="admin@gmail.com"){
         if(senha=="admin"){
-          console.log("Logado com sucesso")
+          navigation.navigate("Home")
         }else{
           console.log("Senha incorreta")
         }
@@ -70,7 +72,10 @@ export default function Login() {
           )}
         </View>
         <View style={styles.linha}>
-          <Text>Lembrar-me</Text>
+          <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
+            <Checkbox value={check} onValueChange={setCheck}/>
+            <Text>Lembrar-me</Text>
+          </View>
           <Text>Esqueceu a senha?</Text>
         </View>
         <TouchableOpacity onPress={logar} style={{width:'80%'}}>

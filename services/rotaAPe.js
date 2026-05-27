@@ -20,5 +20,6 @@ export async function rotaAPe(latitude,longitude,latitudeP,longitudeP) {
         valor[0]
     ])
     const tempo=res.features[0].properties.summary.duration
-    return {rota,tempo}
+    const distancia=res.features[0].properties.summary.distance
+    return {rota,tempo,distancia}
   }

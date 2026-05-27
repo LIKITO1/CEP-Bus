@@ -7,5 +7,5 @@ export async function buscarClima(latitude,longitude){
         body:JSON.stringify({latitude,longitude})
     })
     const res=await response.json()
-    console.log(res)
+    return res
 }
