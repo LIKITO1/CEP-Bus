@@ -1,7 +1,10 @@
 import {StyleSheet} from "react-native"
 export const styles=StyleSheet.create({
     container:{
-        backgroundColor:'white'
+        backgroundColor:'white',
+        display:'flex',
+        flexDirection:'column',
+        gap:30
     },
     containerOne:{
         backgroundColor:'white',
@@ -33,5 +36,41 @@ export const styles=StyleSheet.create({
         width:'80%',
         height:'20%',
         fontSize:13
+    },
+    search:{
+        flexDirection:'row',
+        width:'85%',
+        height:'70%',
+        backgroundColor:'#14151F',
+        margin:'auto',
+        borderRadius:10
+    },
+    btnSearch:{
+        width:'50%',
+        height:'100%',
+        padding:5,
+        borderRadius:10
+    },
+    titleSearch:{
+        marginBottom:10
+    },
+    textBtnSearch:{
+        fontWeight:500,
+        fontSize:16,
+        color:'white'
+    },
+    selected:{
+        backgroundColor:'#211663'
+    },
+    list:{
+        height:50,
+        overflow:'hidden'
+    },
+    scroll:{
+        width:50
+    },
+    estado:{
+        padding:2,
+        borderWidth:1
     }
 })

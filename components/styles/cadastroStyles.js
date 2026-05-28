@@ -11,9 +11,6 @@ export const styles = StyleSheet.create({
       borderColor:"black",
       borderBottomEndRadius:30,
       borderBottomStartRadius:30,
-      display:"flex",
-      justifyContent:"center",
-      alignItems:"center",
       zIndex:1
     },
     baixo:{

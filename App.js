@@ -20,7 +20,8 @@ export default function App(){
         Map:'map/:latitude/:longitude',
         Favorite:'favorite',
         Frequent:'frequent',
-        Cadastro:'cadastro'
+        Cadastro:'cadastro',
+        Historic:'historic'
       }
     }
   }

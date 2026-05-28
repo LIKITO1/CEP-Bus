@@ -4,7 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 export default function ArrowLeftIcon(){
     const navigation=useNavigation()
     function back(){
-        navigation.goBack()
+        if(navigation.canGoBack()){
+            navigation.goBack()
+        }else{
+            navigation.navigate("Home")
+        }
     }
     return(
         <Pressable onPress={back}>

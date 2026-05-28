@@ -25,5 +25,26 @@ export const styles=StyleSheet.create({
         color:'blue',
         fontWeight:500,
         fontSize:14
+    },
+    itens:{
+        marginTop:'20%',
+        marginHorizontal:'auto',
+        width:'80%',
+        height:'70%',
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:'gray',
+        borderTopStartRadius:15,
+        borderTopEndRadius:15,
+        borderBottomStartRadius:15,
+        borderBottomEndRadius:15
+    },
+    item:{
+        padding:10,
+        width:'100%',
+        borderBottomWidth:2,
+        borderTopWidth:2,
+        borderColor:'white'
     }
 })

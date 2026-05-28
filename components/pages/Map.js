@@ -77,6 +77,9 @@ export default function Map({route}){
         buscarParadas(latitude,longitude),
         buscarClima(latitude,longitude)
       ])
+      if(temperatura.msg){
+        console.log(temperatura.msg)
+      }
       const pontosComDistancia=pontos.map((valor)=>{
         const distancia=L.latLng(latitude,longitude).distanceTo(L.latLng(valor.lat,valor.lon))
         return {...valor,distancia:Math.round(distancia)}

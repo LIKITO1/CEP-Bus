@@ -10,6 +10,7 @@ import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
 import Checkbox from "expo-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { globalStyles } from "../styles/globalStyles"
 export default function Login() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
@@ -53,8 +54,8 @@ export default function Login() {
   }
   return (
     <SafeAreaView style={{flex:1}}>
-    <View style={styles.container}>
-      <View style={styles.form}>
+    <View style={globalStyles.container}>
+      <View style={[styles.form,globalStyles.centro]}>
         <Text style={styles.titulo}>Bem-Vindo de Volta</Text>
         <Text style={styles.subtext}>Faça login para continuar</Text>
         <View style={styles.dados}>

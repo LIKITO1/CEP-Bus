@@ -9,6 +9,7 @@ import OpenEyeIcon from "../icons/OpenEyeIcon"
 import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { globalStyles } from "../styles/globalStyles"
 export default function Cadastro() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
@@ -45,7 +46,7 @@ export default function Cadastro() {
   return (
     <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
-      <View style={styles.form}>
+      <View style={[styles.form,globalStyles.centro]}>
         <Text style={styles.titulo}>Seja Bem Vindo</Text>
         <Text style={styles.subtext}>Realize o cadastro para acessar a plataforma</Text>
         <View style={styles.dados}>

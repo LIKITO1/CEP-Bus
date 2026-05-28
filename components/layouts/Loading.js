@@ -1,6 +1,5 @@
 import {View,Animated,Easing} from "react-native"
 import { globalStyles } from "../styles/globalStyles"
-import {styles} from "../styles/loadingStyles"
 import LoadingIcon from "../icons/LoadingIcon"
 import {useRef,useEffect} from "react"
 export default function Loading(){
@@ -20,9 +19,9 @@ export default function Loading(){
         outputRange:["0deg","360deg"]
     })
     return(
-        <View style={[globalStyles.container,styles.container]}>
+        <View style={[globalStyles.container,globalStyles.centro]}>
             <Animated.View style={{transform:[{rotate:rodar}]}}>
-                <LoadingIcon styles={styles.loadAnimation}/>
+                <LoadingIcon/>
             </Animated.View>
         </View>
     )
