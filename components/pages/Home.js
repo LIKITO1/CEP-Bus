@@ -1,16 +1,16 @@
-import {View,Text} from "react-native"
 import Menu from "../layouts/Menu"
 import { globalStyles } from "../styles/globalStyles"
 import {styles} from "../styles/homeStyles"
 import {useState} from "react"
 import NotificationIcon from "../icons/NotificationIcon"
-import { Button, TextInput ,Pressable,ScrollView} from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { buscarEnd } from "../../services/viacep"
+import { View,Text,TextInput ,Pressable,ScrollView} from "react-native"
+import { buscarEnd,buscarCep } from "../../services/viacep"
 import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
 import CepIcon from "../icons/CepIcon"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { LinearGradient } from "expo-linear-gradient"
+import ArrowDownIcon from "../icons/ArrowDownIcon"
 export default function Home(){
   const [nameUser,setNameUser]=useState("Admin")
   const [cep,setCep]=useState("")
@@ -19,12 +19,17 @@ export default function Home(){
   const [selected,setSelected]=useState("CEP")
   const [openList,setOpenList]=useState(false)
   const [estadoSelecionado,setEstadoSelecionado]=useState("SP")
+  const [rua,setRua]=useState("")
+  const [cidade,setCidade]=useState("")
+  const [baixo,setBaixo]=useState(true)
   const estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
   function mostrarList(){
     if(openList){
       setOpenList(false)
+      setBaixo(true)
     }else{
       setOpenList(true)
+      setBaixo(false)
     }
   }
   function selecionar(){
@@ -37,6 +42,18 @@ export default function Home(){
   function digitar(e){
     const numeros=e.replace(/[^0-9]/g,"")
     setCep(numeros)
+  }
+  async function buscaEnd(){
+    if(rua==""||cidade==""){
+      console.log("Preencha todos os campos")
+      return;
+    }
+    try{
+      const res=await buscarCep(estadoSelecionado,cidade,rua)
+      console.log(res)
+    }catch(err){
+
+    }
   }
   async function buscaCep(){
     try{
@@ -63,7 +80,6 @@ export default function Home(){
   }
   }
   return(
-    <SafeAreaView style={{flex:1}}>
     <View style={[globalStyles.container,styles.container]}>
       <View style={styles.containerOne}>
         <View>
@@ -84,14 +100,19 @@ export default function Home(){
         </View>
       </View>
       <View style={styles.containerTwo}>
+      <ScrollView contentContainerStyle={globalStyles.centro}>
         <CepIcon/>
         {selected=="CEP"&&(
-          <>
+          <View style={[globalStyles.centro,{gap:10}]}>
             <Text style={styles.text}>Informe o CEP</Text>
             <Text style={styles.subtext}>Vamos mostrar os pontos de ônibus próximos</Text>
             <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep} placeholder="Digite o CEP..."/>
-            <Button title='Mostrar no mapa' onPress={buscaCep}/>
-          </>
+            <Pressable onPress={buscaCep}>
+              <LinearGradient colors={['#4843F5','#0086E8']} start={{x:0,y:1}} style={styles.btnMap}>
+                <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
+              </LinearGradient>
+            </Pressable>
+          </View>
         )}
         {selected=="END"&&(
           <View style={styles.infoEnd}>
@@ -100,28 +121,39 @@ export default function Home(){
             <Text style={[styles.label,{marginVertical:10}]}>Selecione o estado:</Text>
             <Pressable onPress={mostrarList}>
               <Text style={[styles.estado,styles.estadoSelecionado]}>{estadoSelecionado}</Text>
+              <ArrowDownIcon style={baixo?{transform:[{rotate:'0deg'}]}:{transform:[{rotate:'180deg'}]}}/>
             </Pressable>
               {openList&&(
-                <View style={styles.list}>
-                    <ScrollView>
-                      {estados.map((valor)=>(
-                        <Text key={valor} style={styles.estado} onPress={()=>{
-                          setEstadoSelecionado(valor)
-                          setOpenList(false)
-                        }}>{valor}</Text>
-                      ))}
-                    </ScrollView>
-                </View>
+                <ScrollView style={styles.list}>
+                  {estados.map((valor)=>(
+                    <Text key={valor} style={styles.estado} onPress={()=>{
+                      setEstadoSelecionado(valor)
+                      setOpenList(false)
+                      setBaixo(true)
+                    }}>{valor}</Text>
+                  ))}
+                </ScrollView>
               )}
-            <Text style={styles.label}>Cidade:</Text>
-            <TextInput placeholder="Digite a cidade..." style={styles.entrada}/>
-            <Text style={styles.label}>Rua:</Text>
-            <TextInput placeholder="Digite a rua..." style={styles.entrada}/>
+            <View>
+              <Text style={styles.label}>Cidade:</Text>
+              <Text style={styles.after}>*</Text>
+            </View>
+            <TextInput placeholder="Digite a cidade..." style={styles.entrada} value={cidade} onChangeText={setCidade}/>
+            <View>
+              <Text style={styles.label}>Rua:</Text>
+              <Text style={styles.after}>*</Text>
+            </View>
+            <TextInput placeholder="Digite a rua..." style={styles.entrada} value={rua} onChangeText={setRua}/>
+            <Pressable onPress={buscaEnd}>
+              <LinearGradient colors={['#4843F5','#0086E8']} start={{x:0,y:1}} style={styles.btnMap}>
+                <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
+              </LinearGradient>
+            </Pressable>
           </View>
         )}
+      </ScrollView>
       </View>
       <Menu/>
     </View>
-    </SafeAreaView>
   )
 }

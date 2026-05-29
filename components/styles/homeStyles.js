@@ -4,7 +4,8 @@ export const styles=StyleSheet.create({
         backgroundColor:'white',
         display:'flex',
         flexDirection:'column',
-        gap:30
+        gap:25,
+        flex:1
     },
     containerOne:{
         backgroundColor:'white',
@@ -16,10 +17,10 @@ export const styles=StyleSheet.create({
         padding:8
     },
     containerTwo:{
-        height:'50%',
-        display:'flex',
+        height:460,
+        paddingVertical:20,
         alignItems:'center',
-        justifyContent:'center'
+        overflow:'hidden'
     },
     text:{
         fontSize:23,
@@ -38,8 +39,17 @@ export const styles=StyleSheet.create({
         backgroundColor:"#ddd",
         outlineStyle:'none',
         borderRadius:20,
-        paddingLeft:10,
-        marginVertical:5
+        paddingLeft:15,
+        marginVertical:5,
+        fontWeight:500
+    },
+    after:{
+        color:'red',
+        fontSize:18,
+        position:'absolute',
+        right:-10,
+        top:0,
+        fontWeight:'bold'
     },
     search:{
         flexDirection:'row',
@@ -72,7 +82,7 @@ export const styles=StyleSheet.create({
     },
     estado:{
         padding:5,
-        width:100,
+        width:150,
         backgroundColor:'#ccc',
         display:'flex',
         justifyContent:'center',
@@ -94,5 +104,16 @@ export const styles=StyleSheet.create({
     label:{
         fontWeight:'bold',
         fontSize:20
+    },
+    btnMap:{
+        padding:15,
+        borderRadius:10,
+        width:170,
+        alignItems:'center'
+    },
+    textBtnMap:{
+        fontWeight:600,
+        fontSize:15,
+        color:'white'
     }
 })
