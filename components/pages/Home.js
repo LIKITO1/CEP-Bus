@@ -17,7 +17,16 @@ export default function Home(){
   const [coords,setCoords]=useState(null)
   const navigation=useNavigation()
   const [selected,setSelected]=useState("CEP")
+  const [openList,setOpenList]=useState(false)
+  const [estadoSelecionado,setEstadoSelecionado]=useState("SP")
   const estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
+  function mostrarList(){
+    if(openList){
+      setOpenList(false)
+    }else{
+      setOpenList(true)
+    }
+  }
   function selecionar(){
     if(selected=="CEP"){
       setSelected("END")
@@ -85,18 +94,30 @@ export default function Home(){
           </>
         )}
         {selected=="END"&&(
-          <>
+          <View style={styles.infoEnd}>
             <Text style={styles.text}>Informe o Endereço</Text>
             <Text style={styles.subtext}>Vamos mostrar os pontos de ônibus próximos</Text>
-            <Text>Selecione o estado:</Text>
-            <View style={{height:100}}>
-              <ScrollView style={styles.scroll}>
-                {estados.map((valor)=>(
-                  <Text key={valor} style={styles.estado}>{valor}</Text>
-                ))}
-              </ScrollView>
-            </View>
-          </>
+            <Text style={[styles.label,{marginVertical:10}]}>Selecione o estado:</Text>
+            <Pressable onPress={mostrarList}>
+              <Text style={[styles.estado,styles.estadoSelecionado]}>{estadoSelecionado}</Text>
+            </Pressable>
+              {openList&&(
+                <View style={styles.list}>
+                    <ScrollView>
+                      {estados.map((valor)=>(
+                        <Text key={valor} style={styles.estado} onPress={()=>{
+                          setEstadoSelecionado(valor)
+                          setOpenList(false)
+                        }}>{valor}</Text>
+                      ))}
+                    </ScrollView>
+                </View>
+              )}
+            <Text style={styles.label}>Cidade:</Text>
+            <TextInput placeholder="Digite a cidade..." style={styles.entrada}/>
+            <Text style={styles.label}>Rua:</Text>
+            <TextInput placeholder="Digite a rua..." style={styles.entrada}/>
+          </View>
         )}
       </View>
       <Menu/>

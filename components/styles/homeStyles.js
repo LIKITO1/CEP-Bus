@@ -9,14 +9,14 @@ export const styles=StyleSheet.create({
     containerOne:{
         backgroundColor:'white',
         width:'100%',
-        height:'10%',
+        height:'5%',
         display:'flex',
         justifyContent:'space-between',
         flexDirection:'row',
         padding:8
     },
     containerTwo:{
-        height:'30%',
+        height:'50%',
         display:'flex',
         alignItems:'center',
         justifyContent:'center'
@@ -31,11 +31,15 @@ export const styles=StyleSheet.create({
         color:'gray'
     },
     entrada:{
-        borderWidth:1,
-        borderColor:'black',
         width:'80%',
-        height:'20%',
-        fontSize:13
+        height:50,
+        fontSize:15,
+        padding:5,
+        backgroundColor:"#ddd",
+        outlineStyle:'none',
+        borderRadius:20,
+        paddingLeft:10,
+        marginVertical:5
     },
     search:{
         flexDirection:'row',
@@ -63,14 +67,32 @@ export const styles=StyleSheet.create({
         backgroundColor:'#211663'
     },
     list:{
-        height:50,
+        height:130,
         overflow:'hidden'
     },
-    scroll:{
-        width:50
-    },
     estado:{
-        padding:2,
-        borderWidth:1
+        padding:5,
+        width:100,
+        backgroundColor:'#ccc',
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        height:50,
+        fontWeight:700,
+        fontSize:16,
+        borderRadius:10,
+        marginBottom:5
+    },
+    infoEnd:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    estadoSelecionado:{
+        backgroundColor:'#4A90E2'
+    },
+    label:{
+        fontWeight:'bold',
+        fontSize:20
     }
 })
