@@ -7,10 +7,10 @@ export default function ArrowDownIcon({style}){
 }
 const styles=StyleSheet.create({
     icon:{
-        color:'black',
+        color:'white',
         fontSize:20,
         position:'absolute',
-        right:5,
-        top:'25%'
+        right:10,
+        top:'30%'
     }
 })

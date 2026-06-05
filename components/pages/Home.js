@@ -11,6 +11,7 @@ import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { LinearGradient } from "expo-linear-gradient"
+import SelectAddress from "../layouts/SelectAddress"
 export default function Home() {
   const navigation = useNavigation()
   const [nameUser] = useState("Admin")
@@ -22,50 +23,17 @@ export default function Home() {
   const [rua, setRua] = useState("")
   const [cidade, setCidade] = useState("")
   const estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
-useEffect(() => {
-  Animated.loop(
-    Animated.sequence([
-      Animated.timing(floatAnim,{
-        toValue:-2,
-        duration:3000,
-        easing:Easing.inOut(Easing.ease),
-        useNativeDriver:true
-      }),
-      Animated.timing(floatAnim,{
-        toValue:0,
-        duration:3000,
-        easing:Easing.inOut(Easing.ease),
-        useNativeDriver:true
-      })
-    ])
-  ).start()
-},[])
   const slideAnim = useRef(new Animated.Value(0)).current
-  const floatAnim = useRef(new Animated.Value(0)).current
   const scaleCep = useRef(new Animated.Value(1)).current
   const scaleEnd = useRef(new Animated.Value(1)).current
+  const [mostrarEnds,setMostrarEnds]=useState(false)
+  const [enderecos,setEnderecos]=useState(null)
   useEffect(() => {
     Animated.spring(slideAnim,{
       toValue:selected === "CEP" ? 0 : 1,
       useNativeDriver:false
     }).start()
   },[selected])
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(floatAnim,{
-          toValue:-6,
-          duration:2500,
-          useNativeDriver:true
-        }),
-        Animated.timing(floatAnim,{
-          toValue:0,
-          duration:2500,
-          useNativeDriver:true
-        })
-      ])
-    ).start()
-  },[])
   function animatePress(type){
     const anim=type === "CEP"? scaleCep: scaleEnd
     Animated.sequence([
@@ -98,7 +66,8 @@ useEffect(() => {
     }
     try{
       const res = await buscarCep(estadoSelecionado,cidade,rua)
-      console.log(res)
+      setMostrarEnds(true)
+      setEnderecos(res)
     }catch(err){
       console.log(err)
     }
@@ -131,18 +100,10 @@ useEffect(() => {
     <View
       style={[globalStyles.container,styles.container]}>
       <View style={styles.containerOne}>
-        <Animated.View
-          style={{
-            transform:[
-              {
-                translateY:floatAnim
-              }
-            ]
-          }}
-        >
+        <View>
           <Text style={styles.text}>Olá, {nameUser}!</Text>
           <Text style={styles.subtext}>Encontre o ônibus mais próximo de você</Text>
-        </Animated.View>
+        </View>
         <NotificationIcon/>
       </View>
       <View>
@@ -233,9 +194,9 @@ useEffect(() => {
                 <Text style={styles.estadoSelecionado}>
                   {estadoSelecionado}
                 </Text>
-                <ArrowDownIcon/>
+                <ArrowDownIcon style={{transform:openList?[{rotate:"180deg"}]:[{rotate:"0deg"}]}}/>
               </Pressable>
-              {openList && (
+              {openList ? (
                 <ScrollView style={styles.list}>
                   {estados.map((valor)=>(
                     <Text
@@ -250,7 +211,7 @@ useEffect(() => {
                     </Text>
                   ))}
                 </ScrollView>
-              )}
+              ) : null}
               <Text style={styles.label}>Cidade</Text>
               <TextInput
                 placeholder="Digite a cidade..."
@@ -278,6 +239,9 @@ useEffect(() => {
         </ScrollView>
       </View>
       <Menu/>
+      {mostrarEnds ? (
+        <SelectAddress enderecos={enderecos}/>
+      ) : null}
     </View>
   )
 }

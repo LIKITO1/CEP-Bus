@@ -4,17 +4,21 @@ import { LinearGradient } from "expo-linear-gradient";
 export default function CepIcon(){
     return(
             <LinearGradient colors={['#4843F5','#0086E8']} start={{x:0,y:1}} style={styles.container}>
-                <Feather name="map-pin" size={26} color="white" />
+                <Feather name="map-pin" size={28} color="white" style={styles.icon} />
             </LinearGradient>
     )
 }
 const styles=StyleSheet.create({
     container:{
         borderRadius:100,
-        width:60,
-        height:60,
+        width:68,
+        height:68,
         display:'flex',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        overflow:'visible'
+    },
+    icon:{
+        lineHeight:32
     }
 })

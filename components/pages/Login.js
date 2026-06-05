@@ -65,9 +65,9 @@ export default function Login() {
         <View style={styles.dados}>
           <TextInput placeholder="Digite sua senha..." secureTextEntry={!mostrarSenha} style={styles.textInput} onChangeText={setSenha}/>
           <LockIcon styles={styles.iconLock}/>
-          {mostrarSenha&&(
+          {mostrarSenha ? (
               <OpenEyeIcon styles={styles.eye} onPress={verSenha}/>
-          )}
+          ) : null}
           {!mostrarSenha&&(
               <ClosedEyeIcon styles={styles.eye} onPress={verSenha}/>
           )}

@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent:{
     alignItems:"center",
+    paddingTop:8,
     paddingBottom:50
   },
   text:{
@@ -42,7 +43,7 @@ export const styles = StyleSheet.create({
   search:{
     width:width > 768 ? 500 : "92%",
     height:65,
-    backgroundColor:"#DCEBFF",
+    backgroundColor:"#4984d1",
     alignSelf:"center",
     borderRadius:18,
     flexDirection:"row",

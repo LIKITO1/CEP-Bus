@@ -59,6 +59,41 @@ export const styles = StyleSheet.create({
         textAlign:'center',
         fontWeight:800,
         fontSize:15
+    },
+    feedback:{
+      flex:1,
+      alignItems:'center',
+      justifyContent:'center',
+      paddingHorizontal:24,
+      paddingBottom:80
+    },
+    feedbackTitle:{
+      fontSize:22,
+      fontWeight:'bold',
+      color:'#1F2937',
+      marginBottom:8,
+      textAlign:'center'
+    },
+    feedbackText:{
+      fontSize:15,
+      color:'#475569',
+      textAlign:'center',
+      lineHeight:22,
+      marginBottom:20
+    },
+    feedbackButton:{
+      minWidth:160,
+      height:48,
+      borderRadius:12,
+      backgroundColor:'#3B82F6',
+      alignItems:'center',
+      justifyContent:'center',
+      paddingHorizontal:18
+    },
+    feedbackButtonText:{
+      color:'white',
+      fontSize:15,
+      fontWeight:'bold'
     }
   })
   

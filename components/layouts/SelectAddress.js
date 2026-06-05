@@ -1,0 +1,73 @@
+import {View,Text,ScrollView,Pressable} from "react-native"
+import { globalStyles } from "../styles/globalStyles"
+import {styles} from "../styles/selectStyles"
+import {BlurView} from "expo-blur"
+import {useState,useEffect} from "react"
+import { buscarCoordenadas } from "../../services/geocode"
+import { useNavigation } from "@react-navigation/native"
+export default function SelectAddress({enderecos}){
+    const [address,setAddress]=useState([])
+    const navigation=useNavigation()
+    async function selecionarCEP(logradouro,localidade,uf){
+        let enderecoCompleto=logradouro+" "+localidade+" "+uf
+        const coordenadas=await buscarCoordenadas(enderecoCompleto)
+        const latitude=String(coordenadas[0].lat)
+        const longitude=String(coordenadas[0].lon)
+        navigation.navigate("Map",{latitude,longitude})
+    }
+    useEffect(()=>{
+        setAddress(Array.isArray(enderecos)?enderecos:[])
+    },[enderecos])
+    return(
+        <BlurView style={[globalStyles.container,styles.container]} intensity={65} tint="dark">
+            <View style={styles.panel}>
+                <View style={styles.header}>
+                    <View style={styles.titleGroup}>
+                        <Text style={styles.title}>Enderecos encontrados</Text>
+                        <Text style={styles.subtitle}>
+                            {address.length} {address.length === 1 ? "resultado disponivel" : "resultados disponiveis"}
+                        </Text>
+                    </View>
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>CEP</Text>
+                    </View>
+                </View>
+                <ScrollView contentContainerStyle={styles.itens} showsVerticalScrollIndicator={true}>
+                    {address.length === 0&&(
+                        <View style={styles.emptyBox}>
+                            <Text style={styles.emptyTitle}>Nenhum endereco localizado</Text>
+                            <Text style={styles.emptyText}>Tente ajustar a cidade, estado ou rua informados.</Text>
+                        </View>
+                    )}
+                    {address.map((valor,index)=>(
+                        <Pressable key={`${valor.cep}-${index}`} style={styles.card} onPress={()=>{selecionarCEP(valor.logradouro,valor.localidade,valor.uf)}}>
+                            <View style={styles.cardTop}>
+                                <Text style={styles.cep}>{valor.cep}</Text>
+                                <Text style={styles.uf}>{valor.uf || "BR"}</Text>
+                            </View>
+                            <Text style={styles.street}>{valor.logradouro || "Logradouro nao informado"}</Text>
+                            <View style={styles.infoGrid}>
+                                <View style={styles.infoItem}>
+                                    <Text style={styles.label}>Cidade</Text>
+                                    <Text style={styles.value}>{valor.localidade || "-"}</Text>
+                                </View>
+                                {Boolean(valor.bairro)&&(
+                                    <View style={styles.infoItem}>
+                                        <Text style={styles.label}>Bairro</Text>
+                                        <Text style={styles.value}>{valor.bairro}</Text>
+                                    </View>
+                                )}
+                                {Boolean(valor.unidade)&&(
+                                    <View style={styles.infoItem}>
+                                        <Text style={styles.label}>Unidade</Text>
+                                        <Text style={styles.value}>{valor.unidade}</Text>
+                                    </View>
+                                )}
+                            </View>
+                        </Pressable>
+                    ))}
+                </ScrollView>
+            </View>
+        </BlurView>
+    )
+}

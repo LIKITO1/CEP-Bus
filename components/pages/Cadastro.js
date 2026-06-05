@@ -56,9 +56,9 @@ export default function Cadastro() {
         <View style={styles.dados}>
           <TextInput placeholder="Digite sua senha..." secureTextEntry={!mostrarSenha} style={styles.textInput} onChangeText={setSenha}/>
           <LockIcon styles={styles.iconLock}/>
-          {mostrarSenha&&(
+          {mostrarSenha ? (
               <OpenEyeIcon styles={styles.eye} onPress={verSenha}/>
-          )}
+          ) : null}
           {!mostrarSenha&&(
               <ClosedEyeIcon styles={styles.eye} onPress={verSenha}/>
           )}
@@ -69,7 +69,7 @@ export default function Cadastro() {
           </LinearGradient>
         </TouchableOpacity>
         <TouchableOpacity style={{width:'100%'}}>
-          <Text style={styles.btnConta} onPress={redirectLogar}>Já tem conta?<Text style={{color:'blue',fontWeight:600}}>&nbsp;Efetuar login</Text></Text>
+          <Text style={styles.btnConta} onPress={redirectLogar}>Já tem conta?<Text style={{color:'blue',fontWeight:600}}> Efetuar login</Text></Text>
         </TouchableOpacity>
       </View>
       <View style={styles.baixo}>
