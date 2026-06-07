@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { LinearGradient } from "expo-linear-gradient"
 import SelectAddress from "../layouts/SelectAddress"
+import ErrorMsg from "../layouts/ErrorMsg"
 export default function Home() {
   const navigation = useNavigation()
   const [nameUser] = useState("Admin")
@@ -28,6 +29,8 @@ export default function Home() {
   const scaleEnd = useRef(new Animated.Value(1)).current
   const [mostrarEnds,setMostrarEnds]=useState(false)
   const [enderecos,setEnderecos]=useState(null)
+  const [msg,setMsg]=useState("")
+  const [errorKey,setErrorKey]=useState(0)
   useEffect(() => {
     Animated.spring(slideAnim,{
       toValue:selected === "CEP" ? 0 : 1,
@@ -69,11 +72,12 @@ export default function Home() {
       setMostrarEnds(true)
       setEnderecos(res)
     }catch(err){
-      console.log(err)
+      setMsg("Erro: "+err.message)
     }
   }
   async function buscaCep(){
     try{
+      if(cep.length==8){
       const res = await buscarEnd(cep)
       const historico=await AsyncStorage.getItem("historico")
       if(historico == null){
@@ -92,13 +96,20 @@ export default function Home() {
         longitude:String(longitude)
       })
       navigation.navigate("Map",{latitude,longitude})
+    }
+    else{
+      throw new Error("CEP inválido")
+    }
     }catch(err){
-      console.log("Erro: " + err)
+      setMsg(err.message)
+      setErrorKey((e)=>e+1)
     }
   }
   return(
-    <View
-      style={[globalStyles.container,styles.container]}>
+    <View style={[globalStyles.container,styles.container]}>
+      {msg&&(
+        <ErrorMsg msg={msg} key={errorKey}/>
+      )}
       <View style={styles.containerOne}>
         <View>
           <Text style={styles.text}>Olá, {nameUser}!</Text>
@@ -107,8 +118,7 @@ export default function Home() {
         <NotificationIcon/>
       </View>
       <View>
-        <Text
-          style={[styles.text,styles.titleSearch,globalStyles.centro]}>Opções de Busca</Text>
+        <Text style={[styles.text,styles.titleSearch,globalStyles.centro]}>Opções de Busca</Text>
         <View style={styles.search}>
           <Animated.View
             style={[
@@ -119,16 +129,14 @@ export default function Home() {
                   outputRange:["0%","50%"]
                 })
               }
-            ]}
-          />
+            ]}/>
           <Animated.View
             style={{
               transform:[
                 {scale:scaleCep}
               ],
               width:"50%"
-            }}
-          >
+            }}>
             <Pressable
               style={styles.btnSearch}
               onPress={()=>{
@@ -144,8 +152,7 @@ export default function Home() {
                 {scale:scaleEnd}
               ],
               width:"50%"
-            }}
-          >
+            }}>
             <Pressable
               style={styles.btnSearch}
               onPress={()=>{
@@ -164,20 +171,9 @@ export default function Home() {
             <View style={styles.content}>
               <Text style={styles.text}>Informe o CEP</Text>
               <Text style={styles.subtext}>Vamos mostrar os pontos próximos</Text>
-              <TextInput
-                style={styles.entrada}
-                keyboardType="numeric"
-                onChangeText={digitar}
-                value={cep}
-                placeholder="Digite o CEP..."
-                placeholderTextColor="#94A3B8"
-              />
+              <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep} placeholder="Digite o CEP..." placeholderTextColor="#94A3B8"/>
               <Pressable onPress={buscaCep}>
-                <LinearGradient
-                  colors={["#5AB2FF","#3B82F6"]}
-                  start={{x:0,y:1}}
-                  style={styles.btnMap}
-                >
+                <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
                   <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
                 </LinearGradient>
               </Pressable>
@@ -188,49 +184,31 @@ export default function Home() {
               <Text style={styles.text}>Informe o Endereço</Text>
               <Text style={styles.subtext}>Vamos mostrar os pontos próximos</Text>
               <Text style={styles.label}>Selecione o estado</Text>
-              <Pressable
-                style={styles.selectEstado}
-                onPress={mostrarList}>
+              <Pressable style={styles.selectEstado} onPress={mostrarList}>
                 <Text style={styles.estadoSelecionado}>
                   {estadoSelecionado}
                 </Text>
                 <ArrowDownIcon style={{transform:openList?[{rotate:"180deg"}]:[{rotate:"0deg"}]}}/>
               </Pressable>
-              {openList ? (
+              {openList&&(
                 <ScrollView style={styles.list}>
                   {estados.map((valor)=>(
-                    <Text
-                      key={valor}
-                      style={styles.estado}
+                    <Text key={valor} style={styles.estado}
                       onPress={()=>{
                         setEstadoSelecionado(valor)
                         setOpenList(false)
-                      }}
-                    >
+                      }}>
                       {valor}
                     </Text>
                   ))}
                 </ScrollView>
-              ) : null}
+              )}
               <Text style={styles.label}>Cidade</Text>
-              <TextInput
-                placeholder="Digite a cidade..."
-                style={styles.entrada}
-                value={cidade}
-                onChangeText={setCidade}
-              />
+              <TextInput placeholder="Digite a cidade..." style={styles.entrada} value={cidade} onChangeText={setCidade}/>
               <Text style={styles.label}>Rua</Text>
-              <TextInput
-                placeholder="Digite a rua..."
-                style={styles.entrada}
-                value={rua}
-                onChangeText={setRua}
-              />
+              <TextInput placeholder="Digite a rua..." style={styles.entrada} value={rua} onChangeText={setRua}/>
               <Pressable onPress={buscaEnd}>
-                <LinearGradient
-                  colors={["#5AB2FF","#3B82F6"]}
-                  start={{x:0,y:1}}
-                  style={styles.btnMap}>
+                <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
                 <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
                 </LinearGradient>
               </Pressable>
@@ -239,9 +217,9 @@ export default function Home() {
         </ScrollView>
       </View>
       <Menu/>
-      {mostrarEnds ? (
-        <SelectAddress enderecos={enderecos}/>
-      ) : null}
+      {mostrarEnds&&(
+        <SelectAddress enderecos={enderecos} onClose={()=>setMostrarEnds(false)}/>
+      )}
     </View>
   )
 }

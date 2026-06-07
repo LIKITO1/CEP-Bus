@@ -5,7 +5,8 @@ import {BlurView} from "expo-blur"
 import {useState,useEffect} from "react"
 import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
-export default function SelectAddress({enderecos}){
+import CloseIcon from "../icons/CloseIcon"
+export default function SelectAddress({enderecos,onClose}){
     const [address,setAddress]=useState([])
     const navigation=useNavigation()
     async function selecionarCEP(logradouro,localidade,uf){
@@ -21,6 +22,7 @@ export default function SelectAddress({enderecos}){
     return(
         <BlurView style={[globalStyles.container,styles.container]} intensity={65} tint="dark">
             <View style={styles.panel}>
+                <CloseIcon onPress={onClose}/>
                 <View style={styles.header}>
                     <View style={styles.titleGroup}>
                         <Text style={styles.title}>Enderecos encontrados</Text>
@@ -51,13 +53,13 @@ export default function SelectAddress({enderecos}){
                                     <Text style={styles.label}>Cidade</Text>
                                     <Text style={styles.value}>{valor.localidade || "-"}</Text>
                                 </View>
-                                {Boolean(valor.bairro)&&(
+                                {valor.bairro!=null&&valor.bairro!=undefined&&(
                                     <View style={styles.infoItem}>
                                         <Text style={styles.label}>Bairro</Text>
                                         <Text style={styles.value}>{valor.bairro}</Text>
                                     </View>
                                 )}
-                                {Boolean(valor.unidade)&&(
+                                {valor.unidade!=null&&valor.unidade!=undefined&&(
                                     <View style={styles.infoItem}>
                                         <Text style={styles.label}>Unidade</Text>
                                         <Text style={styles.value}>{valor.unidade}</Text>

@@ -1,7 +1,6 @@
 import { Dimensions, Platform, StyleSheet } from "react-native";
 const { width } = Dimensions.get("window")
 const isWeb = Platform.OS === "web"
-
 export const styles=StyleSheet.create({
     container:{
         position:'absolute',
