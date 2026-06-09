@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {TouchableOpacity,StyleSheet,Text,View} from "react-native"
 import {useNavigation} from "@react-navigation/native"
+import { iconStyles } from '../styles/iconStyles';
 export default function MapIcon(){
   const navigation=useNavigation()
   function map(){
@@ -9,8 +10,8 @@ export default function MapIcon(){
   return(
     <View>
     <TouchableOpacity onPress={map} style={styles.container}>
-      <Ionicons name="map-outline" size={24} color="black" />
-      <Text style={styles.text}>Mapa</Text>
+      <Ionicons name="map-outline" style={iconStyles.icon} color="black" />
+      <Text style={iconStyles.text}>Mapa</Text>
     </TouchableOpacity>
   </View>
   )
@@ -21,8 +22,5 @@ const styles=StyleSheet.create({
     flexDirection:'column',
     alignItems:'center',
     justifyContent:'center'
-  },
-  text:{
-    fontSize:12
   }
 })

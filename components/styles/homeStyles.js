@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
     })
   },
   btnMap:{
-    width:width > 768 ? 260 : 220,
+    width:width > 768 ? 260 : 150,
     paddingVertical:17,
     borderRadius:18,
     alignItems:"center",
@@ -167,5 +167,13 @@ export const styles = StyleSheet.create({
     color:"#1E293B",
     marginTop:20,
     marginBottom:8
+  },
+  btns:{
+    display:'flex',
+    flexDirection:'row',
+    width:'100%',
+    alignItems:'center',
+    justifyContent:'center',
+    gap:15
   }
 })

@@ -1,6 +1,7 @@
-import Entypo from '@expo/vector-icons/Entypo';
+import Octicons from '@expo/vector-icons/Octicons';
 import {TouchableOpacity,Text,StyleSheet} from "react-native"
 import { useNavigation } from '@react-navigation/native';
+import { iconStyles } from '../styles/iconStyles';
 export default function HomeIcon(){
   const navigation=useNavigation()
   function home(){
@@ -8,8 +9,8 @@ export default function HomeIcon(){
   }
   return(
     <TouchableOpacity onPress={home} style={styles.container}>
-      <Entypo name="home" size={24} color="black"/>
-      <Text style={styles.text}>Home</Text>
+      <Octicons name="home" style={iconStyles.icon} color="black"/>
+      <Text style={iconStyles.text}>Home</Text>
     </TouchableOpacity>
   )
 }
@@ -19,8 +20,5 @@ const styles=StyleSheet.create({
     flexDirection:'column',
     alignItems:'center',
     justifyContent:'center'
-  },
-  text:{
-    fontSize:12
   }
 })

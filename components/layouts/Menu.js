@@ -1,8 +1,9 @@
-import {View,Text,StyleSheet} from "react-native"
+import {View} from "react-native"
 import HomeIcon from "../icons/HomeIcon"
 import PerfilIcon from "../icons/PerfilIcon"
 import MapIcon from "../icons/MapIcon"
 import FavoritesIcon from "../icons/FavoritesIcon"
+import { styles } from "../styles/menuStyles"
 export default function Menu(){
   return (
     <View style={styles.container}>
@@ -13,17 +14,3 @@ export default function Menu(){
     </View>
   )
 }
-const styles=StyleSheet.create({
-  container:{
-    flex:1,
-    width:'100%',
-    height:'10%',
-    display:"flex",
-    flexDirection:"row",
-    alignItems:'center',
-    justifyContent:'space-around',
-    bottom:0,
-    position:'absolute',
-    backgroundColor:'gray'
-  }
-})

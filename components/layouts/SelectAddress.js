@@ -6,15 +6,23 @@ import {useState,useEffect} from "react"
 import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
 import CloseIcon from "../icons/CloseIcon"
+import ErrorMsg from "./ErrorMsg"
 export default function SelectAddress({enderecos,onClose}){
     const [address,setAddress]=useState([])
+    const [msg,setMsg]=useState("")
+    const [msgKey,setMsgKey]=useState(0)
     const navigation=useNavigation()
     async function selecionarCEP(logradouro,localidade,uf){
         let enderecoCompleto=logradouro+" "+localidade+" "+uf
         const coordenadas=await buscarCoordenadas(enderecoCompleto)
-        const latitude=String(coordenadas[0].lat)
-        const longitude=String(coordenadas[0].lon)
-        navigation.navigate("Map",{latitude,longitude})
+        if(coordenadas.length>0){
+            const latitude=String(coordenadas[0].lat)
+            const longitude=String(coordenadas[0].lon)
+            navigation.navigate("Map",{latitude,longitude})
+        }else{
+            setMsgKey((e)=>e+1)
+            setMsg("Local não registrado na API")
+        }
     }
     useEffect(()=>{
         setAddress(Array.isArray(enderecos)?enderecos:[])
@@ -22,6 +30,9 @@ export default function SelectAddress({enderecos,onClose}){
     return(
         <BlurView style={[globalStyles.container,styles.container]} intensity={65} tint="dark">
             <View style={styles.panel}>
+                {msg&&(
+                    <ErrorMsg msg={msg} key={msgKey}/>
+                )}
                 <CloseIcon onPress={onClose}/>
                 <View style={styles.header}>
                     <View style={styles.titleGroup}>

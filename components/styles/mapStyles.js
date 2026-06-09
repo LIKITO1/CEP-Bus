@@ -6,59 +6,34 @@ export const styles = StyleSheet.create({
     map: {
       flex: 1,
     },
-    btn:{
+    btnsLocalization:{
       position:'absolute',
-      width:120,
-      height:50,
       elevation:5,
-      right:10,
-      bottom:100,
-      backgroundColor:'white',
+      zIndex:9999,
+      height:70,
+      width:'100%',
+      bottom:'10%',
       display:'flex',
       alignItems:'center',
-      justifyContent:"center",
-      borderRadius:15,
-      zIndex:9999
+      justifyContent:'space-around',
+      flexDirection:'row',
+      right:0
     },
-    btn1:{
-      position:'absolute',
-      width:120,
+    btn:{
+      width:130,
       height:50,
-      elevation:5,
-      right:10,
-      bottom:170,
       backgroundColor:'white',
       display:'flex',
       alignItems:'center',
       justifyContent:"center",
       borderRadius:15,
-      zIndex:9999
+      boxShadow:'0px 0px 10px 1px rgba(0,0,0,0.5)',
+      padding:5
     },
     textoBtn:{
       fontSize:15,
-      fontWeight:'bold'
-    },
-    clima:{
-        position:'absolute',
-        elevation:5,
-        top:10,
-        right:10,
-        width:120,
-        height:60,
-        backgroundColor:'white',
-        borderRadius:10,
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        zIndex:9999
-    },
-    temp:{
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        textAlign:'center',
-        fontWeight:800,
-        fontSize:15
+      fontWeight:600,
+      color:'white'
     },
     feedback:{
       flex:1,

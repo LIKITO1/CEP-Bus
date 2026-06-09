@@ -105,9 +105,12 @@ export default function Home() {
       setErrorKey((e)=>e+1)
     }
   }
+  function clear(){
+    setCep("")
+  }
   return(
     <View style={[globalStyles.container,styles.container]}>
-      {msg&&(
+      {!!msg&&(
         <ErrorMsg msg={msg} key={errorKey}/>
       )}
       <View style={styles.containerOne}>
@@ -172,11 +175,18 @@ export default function Home() {
               <Text style={styles.text}>Informe o CEP</Text>
               <Text style={styles.subtext}>Vamos mostrar os pontos próximos</Text>
               <TextInput style={styles.entrada} keyboardType="numeric" onChangeText={digitar} value={cep} placeholder="Digite o CEP..." placeholderTextColor="#94A3B8"/>
-              <Pressable onPress={buscaCep}>
-                <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
-                  <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
-                </LinearGradient>
-              </Pressable>
+              <View style={styles.btns}>
+                <Pressable onPress={buscaCep}>
+                  <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
+                    <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
+                  </LinearGradient>
+                </Pressable>
+                <Pressable onPress={clear}>
+                  <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
+                    <Text style={styles.textBtnMap}>Limpar</Text>
+                  </LinearGradient>
+                </Pressable>
+              </View>
             </View>
           )}
           {selected === "END" && (

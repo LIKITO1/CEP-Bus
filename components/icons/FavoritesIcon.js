@@ -1,6 +1,7 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 import {TouchableOpacity,StyleSheet,Text} from "react-native"
 import {useNavigation} from "@react-navigation/native"
+import { iconStyles } from '../styles/iconStyles';
 export default function FavoritesIcon(){
   const navigation=useNavigation()
   function favorites(){
@@ -8,8 +9,8 @@ export default function FavoritesIcon(){
   }
   return(
     <TouchableOpacity onPress={favorites} style={styles.container}>
-      <AntDesign name="star" size={24} color="black" />
-      <Text style={styles.text}>Favoritos</Text>
+      <Feather name="star" style={iconStyles.icon} color="black" />
+      <Text style={iconStyles.text}>Favoritos</Text>
     </TouchableOpacity>
   )
 }
@@ -19,8 +20,5 @@ const styles=StyleSheet.create({
     flexDirection:'column',
     alignItems:'center',
     justifyContent:'center'
-  },
-  text:{
-    fontSize:12
   }
 })

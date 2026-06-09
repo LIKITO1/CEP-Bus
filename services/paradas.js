@@ -1,17 +1,36 @@
+import AsyncStorage from "@react-native-async-storage/async-storage"
 export async function buscarParadas(latitude,longitude){
+  const lat=latitude.toFixed(3)
+  const lon=longitude.toFixed(3)
+  const coordenada=`${lat}/${lon}`
+  const cache=await AsyncStorage.getItem(coordenada)
+  if(cache){
+    return JSON.parse(cache)
+  }
     const query = `
-    [out:json];
+    [out:json][timeout:10];
     node
       [highway=bus_stop]
       (around:300,${latitude},${longitude});
     out;`
-    const response = await fetch(
-      "https://overpass-api.de/api/interpreter",
-      {
+    try{
+    const response = await fetch("https://overpass-api.de/api/interpreter",{
         method:"POST",
         body: query
-      }
-    )
+      })
     const res = await response.json()
-    return res.elements
+    if(res.element?.length){
+      await AsyncStorage.setItem(coordenada,JSON.stringify(res.elements))
+      return res.elements
+    }
+  }catch(err){
+    console.log("Erro na API 1")
+  }
+      const response1 = await fetch("https://lz4.overpass-api.de/api/interpreter",{
+          method:"POST",
+          body: query
+        })
+      const res1=await response1.text()
+      const res=JSON.parse(res1)
+      return res.elements || []
   }

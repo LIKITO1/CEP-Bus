@@ -12,6 +12,8 @@ import Loading from "../layouts/Loading"
 import { rotaAPe } from "../../services/rotaAPe"
 import { buscarParadas } from "../../services/paradas"
 import {buscarClima} from "../../services/weather"
+import Temperature from "../layouts/Temperature"
+import ErrorMsg from "../layouts/ErrorMsg"
 const markerIcon = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png"
 const markerIcon2x = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png"
 const markerShadow = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png"
@@ -45,14 +47,14 @@ export default function Map({route}){
   const [pontos,setPontos]=useState([])
   const [temperatura,setTemperatura]=useState(null)
   const [erroLocation,setErroLocation]=useState(false)
-  const [mensagemErro,setMensagemErro]=useState("")
+  const [msg,setMsg]=useState("")
   const mapRef=useRef(null)
   const latitudeCEP=locationCEP?.latitude ?? null
   const longitudeCEP=locationCEP?.longitude ?? null
   const latitudeMapa = latitudeCEP ?? location?.latitude
   const longitudeMapa = longitudeCEP ?? location?.longitude
   const temCEP=route.params!=null
-  const carregando = temCEP?locationCEP == null && mensagemErro === "": location == null && !erroLocation
+  const carregando = temCEP?locationCEP == null && msg === "": location == null && !erroLocation
   const [rota,setRota]=useState(null)
   const [tempo,setTempo]=useState(null)
   const [pontoMaisProximo,setPontoMaisProximo]=useState(null)
@@ -74,31 +76,31 @@ export default function Map({route}){
   }
   async function pegarPosition(){
     try{
-      setMensagemErro("")
+      setMsg("")
       const {status}=await Location.requestForegroundPermissionsAsync()
       if(status=="granted"){
         const atualLocation=await Location.getCurrentPositionAsync({})
         setLocation(atualLocation.coords)
         setErroLocation(false)
       }else{
-        setMensagemErro("Permissao de localizacao negada. Ative a permissao para ver sua posicao no mapa.")
+        setMsg("Permissao de localizacao negada. Ative a permissao para ver sua posicao no mapa.")
         setErroLocation(true)
       }
     }catch(err){
       console.log("Erro ao pegar localização: " + err)
-      setMensagemErro("Nao foi possivel obter sua localizacao agora. Tente novamente.")
+      setMsg("Nao foi possivel obter sua localizacao agora. Tente novamente.")
       setErroLocation(true)
     }
   }
   async function carregarDados(){
     if(route.params){
       try{
-      setMensagemErro("")
+      setMsg("")
       const {longitude,latitude}=route.params
       const latitudeNumero=Number(latitude)
       const longitudeNumero=Number(longitude)
       if(Number.isNaN(latitudeNumero)||Number.isNaN(longitudeNumero)){
-        setMensagemErro("Coordenadas invalidas para abrir o mapa.")
+        setMsg("Coordenadas invalidas para abrir o mapa.")
         setErroLocation(true)
         return
       }
@@ -123,14 +125,14 @@ export default function Map({route}){
       setTemperatura(temperatura?.temperatura ?? null)
       }catch(err){
         console.log("Erro ao carregar dados do mapa: " + err)
-        setMensagemErro("Nao foi possivel carregar paradas e clima. O mapa ainda pode ser usado.")
+        setMsg("Nao foi possivel carregar paradas e clima. O mapa ainda pode ser usado.")
         setPontos([])
       }
     }
   }
   function tentarNovamente(){
     setErroLocation(false)
-    setMensagemErro("")
+    setMsg("")
     setPontos([])
     setRota(null)
     setTempo(null)
@@ -177,6 +179,8 @@ export default function Map({route}){
           setTempo(null)
           setPontoMaisProximo(null)
         }
+    }else{
+      setMsg()
     }
   }
   rotaMaisProximo()
@@ -237,27 +241,27 @@ export default function Map({route}){
           <Polyline positions={rota} color="blue" />
         ) : null}
       </MapContainer>
-      <TouchableOpacity onPress={centralizar} style={[styles.btn,{backgroundColor:'#B5B5B5'}]}>
-        <Text style={styles.textoBtn}>Onde estou?</Text>
-      </TouchableOpacity>
-      {(latitudeCEP!=null&&longitudeCEP!=null)&&(
-      <TouchableOpacity onPress={centralizarCEP} style={styles.btn1}>
-        <Text style={styles.textoBtn}>CEP que digitei</Text>
-      </TouchableOpacity>
-      )}
+      <View style={styles.btnsLocalization}>
+        <TouchableOpacity onPress={centralizar} style={[styles.btn,{backgroundColor:'#2563EB'}]}>
+          <Text style={styles.textoBtn}>Onde estou?</Text>
+        </TouchableOpacity>
+        {(latitudeCEP!=null&&longitudeCEP!=null)&&(
+        <TouchableOpacity onPress={centralizarCEP} style={[styles.btn,{backgroundColor:'#1D4ED8'}]}>
+          <Text style={styles.textoBtn}>CEP que digitei</Text>
+        </TouchableOpacity>
+        )}
+      </View>
       {temperatura!=null&&(
-        <View style={styles.clima}>
-          <Text style={styles.temp}>Temperatura:{temperatura}°C</Text>
-        </View>
+        <Temperature temperatura={temperatura}/>
       )}
       </>
     )}
       {!carregando&&(latitudeMapa==null||longitudeMapa==null)&&(
         <View style={styles.feedback}>
           <Text style={styles.feedbackTitle}>Mapa indisponivel</Text>
-          <Text style={styles.feedbackText}>
-            {mensagemErro || "Nao encontramos uma localizacao valida para centralizar o mapa."}
-          </Text>
+          {msg&&(
+            <ErrorMsg msg={msg}/>
+          )}
           <TouchableOpacity onPress={tentarNovamente} style={styles.feedbackButton}>
             <Text style={styles.feedbackButtonText}>Tentar novamente</Text>
           </TouchableOpacity>
