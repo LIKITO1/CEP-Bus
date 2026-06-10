@@ -2,10 +2,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import Login from "./components/pages/Login"
 import Home from "./components/pages/Home"
-import Perfil from "./components/pages/Perfil"
 import Map from "./components/pages/Map"
 import Favorite from "./components/pages/Favorite"
-import FrequentLocals from './components/pages/FrequentLocals';
 import Historic from './components/pages/Historic';
 import Cadastro from './components/pages/Cadastro';
 import ConnectionConfirm from './components/layouts/ConnectionConfirm';
@@ -18,10 +16,8 @@ export default function App(){
       screens:{
         Login:'',
         Home:'home',
-        Perfil:'perfil',
         Map:'map/:latitude/:longitude',
         Favorite:'favorite',
-        Frequent:'frequent',
         Cadastro:'cadastro',
         Historic:'historic'
       }
@@ -33,10 +29,8 @@ export default function App(){
       <Stack.Navigator initialMapName='Login' screenOptions={{headerShown:false}}>
         <Stack.Screen name='Login' component={Login}/>
         <Stack.Screen name='Home' component={Home}/>
-        <Stack.Screen name='Perfil' component={Perfil}/>
         <Stack.Screen name='Map' component={Map}/>
         <Stack.Screen name='Favorite' component={Favorite}/>
-        <Stack.Screen name='Frequent' component={FrequentLocals}/>
         <Stack.Screen name='Historic' component={Historic}/>
         <Stack.Screen name='Cadastro' component={Cadastro}/>
       </Stack.Navigator>

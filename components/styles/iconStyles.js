@@ -6,5 +6,11 @@ export const iconStyles=StyleSheet.create({
     },
     icon:{
         fontSize:25
-    }
+    },
+    container:{
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center'
+      }
 })

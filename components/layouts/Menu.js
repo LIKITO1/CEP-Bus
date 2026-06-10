@@ -1,6 +1,6 @@
 import {View} from "react-native"
 import HomeIcon from "../icons/HomeIcon"
-import PerfilIcon from "../icons/PerfilIcon"
+import HistoricIcon from "../icons/HistoricIcon"
 import MapIcon from "../icons/MapIcon"
 import FavoritesIcon from "../icons/FavoritesIcon"
 import { styles } from "../styles/menuStyles"
@@ -10,7 +10,7 @@ export default function Menu(){
       <HomeIcon/>
       <MapIcon/>
       <FavoritesIcon/>
-      <PerfilIcon/>
+      <HistoricIcon/>
     </View>
   )
 }

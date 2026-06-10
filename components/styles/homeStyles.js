@@ -120,7 +120,7 @@ export const styles = StyleSheet.create({
   textBtnMap:{
     color:"white",
     fontSize:16,
-    fontWeight:"800"
+    fontWeight:600
   },
   infoEnd:{
     width:"100%",

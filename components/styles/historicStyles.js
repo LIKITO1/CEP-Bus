@@ -1,50 +1,135 @@
 import { StyleSheet } from "react-native"
-export const styles=StyleSheet.create({
-    container:{
-        flex:1
+
+export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F4F8FF',
     },
-    top:{
-        position:'absolute',
-        top:0,
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-around',
-        width:'100%',
-        alignItems:'center',
-        height:'8%'
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 22,
+        paddingTop: 20,
+        paddingBottom: 16,
     },
-    text:{
-        fontWeight:500,
-        fontSize:20
+    title: {
+        fontSize: 28,
+        fontWeight: '800',
+        color: '#0F172A',
     },
-    symbols:{
-        fontSize:30,
-        fontWeight:'bold'
+    subtitle: {
+        fontSize: 14,
+        color: '#64748B',
+        fontWeight: '500',
+        marginTop: 3,
     },
-    clear:{
-        color:'blue',
-        fontWeight:500,
-        fontSize:14
+    clearBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        backgroundColor: '#EF4444',
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 14,
     },
-    itens:{
-        marginTop:'20%',
-        marginHorizontal:'auto',
-        width:'80%',
-        height:'70%',
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:'gray',
-        borderTopStartRadius:15,
-        borderTopEndRadius:15,
-        borderBottomStartRadius:15,
-        borderBottomEndRadius:15
+    textClear: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 14,
     },
-    item:{
-        padding:10,
-        width:'100%',
-        borderBottomWidth:2,
-        borderTopWidth:2,
-        borderColor:'white'
-    }
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        paddingHorizontal: 20,
+        paddingBottom: 110,
+        paddingTop: 4,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        paddingTop: 80,
+    },
+    emptyIconContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: '#EFF6FF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 20,
+    },
+    emptyTitle: {
+        fontSize: 22,
+        fontWeight: '700',
+        color: '#1E293B',
+        marginBottom: 8,
+    },
+    emptyText: {
+        fontSize: 15,
+        color: '#94A3B8',
+        fontWeight: '500',
+        textAlign: 'center',
+        maxWidth: 240,
+    },
+    item: {
+        backgroundColor: 'white',
+        borderRadius: 18,
+        paddingVertical: 14,
+        paddingHorizontal: 16,
+        marginBottom: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        shadowColor: '#3B82F6',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+        elevation: 3,
+    },
+    itemLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 14,
+        flex: 1,
+    },
+    iconCircle: {
+        width: 46,
+        height: 46,
+        borderRadius: 23,
+        backgroundColor: '#EFF6FF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    cepLabel: {
+        fontSize: 11,
+        color: '#94A3B8',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: 0.8,
+        marginBottom: 2,
+    },
+    cepValue: {
+        fontSize: 18,
+        fontWeight: '800',
+        color: '#0F172A',
+    },
+    itemRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    actionBtn: {
+        width: 36,
+        height: 36,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    starBtn: {
+        backgroundColor: '#FFFBEB',
+    },
+    deleteBtn: {
+        backgroundColor: '#FEF2F2',
+    },
 })
