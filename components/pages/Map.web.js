@@ -83,11 +83,10 @@ export default function Map({route}){
         setLocation(atualLocation.coords)
         setErroLocation(false)
       }else{
-        setMsg("Permissao de localizacao negada. Ative a permissao para ver sua posicao no mapa.")
+        setMsg("Permissao de localização negada. Ative a permissão para ver sua posição no mapa.")
         setErroLocation(true)
       }
     }catch(err){
-      console.log("Erro ao pegar localização: " + err)
       setMsg("Nao foi possivel obter sua localizacao agora. Tente novamente.")
       setErroLocation(true)
     }
@@ -247,7 +246,7 @@ export default function Map({route}){
         </TouchableOpacity>
         {(latitudeCEP!=null&&longitudeCEP!=null)&&(
         <TouchableOpacity onPress={centralizarCEP} style={[styles.btn,{backgroundColor:'#1D4ED8'}]}>
-          <Text style={styles.textoBtn}>CEP que digitei</Text>
+          <Text style={styles.textoBtn}>CEP selecionado</Text>
         </TouchableOpacity>
         )}
       </View>

@@ -19,18 +19,22 @@ export async function buscarParadas(latitude,longitude){
         body: query
       })
     const res = await response.json()
-    if(res.element?.length){
+    if(res.elements?.length){
       await AsyncStorage.setItem(coordenada,JSON.stringify(res.elements))
       return res.elements
     }
   }catch(err){
     console.log("Erro na API 1")
   }
-      const response1 = await fetch("https://lz4.overpass-api.de/api/interpreter",{
+  try{
+    const response1 = await fetch("https://lz4.overpass-api.de/api/interpreter",{
           method:"POST",
           body: query
-        })
+      })
       const res1=await response1.text()
       const res=JSON.parse(res1)
       return res.elements || []
+    }catch(err){
+      console.log("Erro nas duas APIs")
+    }
   }

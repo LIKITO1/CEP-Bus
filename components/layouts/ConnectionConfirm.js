@@ -1,25 +1,34 @@
 import {View,Text} from "react-native"
 import {useState,useEffect} from "react"
 import { testaAPI } from "../../services/testaAPI"
-import { StyleSheet } from "react-native"
+import {styles} from "../styles/connectionStyles"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function ConnectionConfirm(){
     const [msg,setMsg]=useState("Conectando-se ao servidor")
     const [ball,setBall]=useState("waiting")
-    useEffect(()=>{
-        setInterval(()=>{
-        (async function(){
-            setMsg("Verificando conexão")
-            setBall("waiting")
+    async function verifica(){
+        setMsg("Verificando conexão")
+        setBall("waiting")
+        try{
             const res=await testaAPI()
             setMsg(res.msg)
             if(!res.msg){
-                setMsg("Servidor desconectado")
-                setBall("disconected")
-                return;
+                throw new Error("Problema na conexão")
             }
             setBall("conected")
-        })()
-    },30000)
+            await AsyncStorage.setItem("servidor",true)
+        }catch(err){
+            await AsyncStorage.setItem("servidor",false)
+            setBall("disconnected")
+            setMsg("Problema na conexão")
+        }
+    }
+    useEffect(()=>{
+        verifica()
+        const interval=setInterval(()=>{
+            verifica()
+        },30000)
+        return ()=>clearInterval(interval)
     },[])
     return(
         <View style={styles.container}>
@@ -30,41 +39,9 @@ export default function ConnectionConfirm(){
             {ball=="waiting"&&(
             <View style={[styles.ball,styles.waiting]}></View>
             )}
-            {ball=="disconected"&&(
+            {ball=="disconnected"&&(
             <View style={[styles.ball,styles.disconected]}></View>
             )}
         </View>
     )
 }
-const styles=StyleSheet.create({
-    container:{
-        position:'absolute',
-        height:25,
-        width:'100%',
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
-        flexDirection:'row',
-        gap:30,
-        top:0,
-        backgroundColor:'#ddd'
-    },
-    ball:{
-        width:8,
-        height:8,
-        borderRadius:10
-    },
-    conected:{
-        backgroundColor:'green'
-    },
-    waiting:{
-        backgroundColor:'#FE8D59'
-    },
-    disconected:{
-        backgroundColor:'red'
-    },
-    text:{
-        fontSize:15,
-        fontWeight:500
-    }
-})

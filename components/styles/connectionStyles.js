@@ -1,0 +1,33 @@
+import {StyleSheet} from "react-native"
+export const styles=StyleSheet.create({
+    container:{
+        position:'absolute',
+        height:25,
+        width:'100%',
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        flexDirection:'row',
+        gap:30,
+        top:0,
+        backgroundColor:'#ddd'
+    },
+    ball:{
+        width:8,
+        height:8,
+        borderRadius:10
+    },
+    conected:{
+        backgroundColor:'green'
+    },
+    waiting:{
+        backgroundColor:'#FE8D59'
+    },
+    disconected:{
+        backgroundColor:'red'
+    },
+    text:{
+        fontSize:15,
+        fontWeight:500
+    }
+})

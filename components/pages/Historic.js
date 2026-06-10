@@ -2,41 +2,35 @@ import { View, Text, Pressable, ScrollView, TouchableOpacity } from "react-nativ
 import Menu from "../layouts/Menu"
 import { styles } from "../styles/historicStyles"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Feather from '@expo/vector-icons/Feather'
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { buscarEnd } from "../../services/viacep"
 import { buscarCoordenadas } from "../../services/geocode"
-
 export default function Historic() {
     const [historico, setHistorico] = useState([])
     const [favoritando, setFavoritando] = useState(null)
     const navigation = useNavigation()
-
     async function verHistorico() {
         const data = await AsyncStorage.getItem("historico")
         setHistorico(data ? JSON.parse(data) : [])
     }
-
     useFocusEffect(
         useCallback(() => {
             verHistorico()
         }, [])
     )
-
     async function limparHistorico() {
         await AsyncStorage.removeItem("historico")
         setHistorico([])
     }
-
     async function removerItem(index) {
         const novo = historico.filter((_, i) => i !== index)
         await AsyncStorage.setItem("historico", JSON.stringify(novo))
         setHistorico(novo)
     }
-
     async function adicionarFavorito(cep, index) {
         try {
             setFavoritando(index)
@@ -46,8 +40,7 @@ export default function Historic() {
                 logradouro: res.logradouro,
                 bairro: res.bairro,
                 localidade: res.localidade,
-                uf: res.uf,
-                savedAt: Date.now()
+                uf: res.uf
             }
             const data = await AsyncStorage.getItem("favoritos")
             const favoritos = data ? JSON.parse(data) : []
@@ -62,7 +55,6 @@ export default function Historic() {
             setFavoritando(null)
         }
     }
-
     async function navegarParaMapa(cep) {
         try {
             const res = await buscarEnd(cep)
@@ -75,13 +67,11 @@ export default function Historic() {
             console.log("Erro ao navegar:", err)
         }
     }
-
     function formatarCep(cep) {
         const s = String(cep).replace(/\D/g, "")
         if (s.length === 8) return s.slice(0, 5) + "-" + s.slice(5)
         return cep
     }
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F4F8FF' }}>
             <View style={styles.container}>
@@ -103,16 +93,15 @@ export default function Historic() {
                 <ScrollView
                     style={styles.scrollView}
                     contentContainerStyle={styles.scrollContent}
-                    showsVerticalScrollIndicator={false}
-                >
+                    showsVerticalScrollIndicator={false}>
                     {historico.length === 0 ? (
                         <View style={styles.emptyContainer}>
                             <View style={styles.emptyIconContainer}>
-                                <AntDesign name="clockcircleo" size={48} color="#5AB2FF" />
+                                <AntDesign name="clockcircleo" size={50} color="#5AB2FF"/>
                             </View>
                             <Text style={styles.emptyTitle}>Nenhum histórico</Text>
                             <Text style={styles.emptyText}>
-                                Suas buscas de CEP aparecerão aqui
+                                Suas buscas aparecerão aqui
                             </Text>
                         </View>
                     ) : (
@@ -147,7 +136,7 @@ export default function Historic() {
                                         style={[styles.actionBtn, styles.deleteBtn]}
                                         onPress={() => removerItem(index)}
                                     >
-                                        <Feather name="trash-2" size={16} color="#EF4444" />
+                                    <Feather name="trash-2" size={16} color="#EF4444" />
                                     </TouchableOpacity>
                                     <Feather name="chevron-right" size={20} color="#94A3B8" />
                                 </View>

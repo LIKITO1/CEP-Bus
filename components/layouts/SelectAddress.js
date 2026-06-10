@@ -7,14 +7,23 @@ import { buscarCoordenadas } from "../../services/geocode"
 import { useNavigation } from "@react-navigation/native"
 import CloseIcon from "../icons/CloseIcon"
 import ErrorMsg from "./ErrorMsg"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function SelectAddress({enderecos,onClose}){
     const [address,setAddress]=useState([])
     const [msg,setMsg]=useState("")
     const [msgKey,setMsgKey]=useState(0)
     const navigation=useNavigation()
-    async function selecionarCEP(logradouro,localidade,uf){
+    async function selecionarCEP(logradouro,localidade,uf,cep){
         let enderecoCompleto=logradouro+" "+localidade+" "+uf
         const coordenadas=await buscarCoordenadas(enderecoCompleto)
+        const historico=await AsyncStorage.getItem("historico")
+        if(historico == null){
+            await AsyncStorage.setItem("historico",JSON.stringify([cep]))
+          }else{
+            const novoHistorico=JSON.parse(historico)
+            novoHistorico.push(cep)
+            await AsyncStorage.setItem("historico",JSON.stringify(novoHistorico))
+          }
         if(coordenadas.length>0){
             const latitude=String(coordenadas[0].lat)
             const longitude=String(coordenadas[0].lon)
@@ -53,7 +62,7 @@ export default function SelectAddress({enderecos,onClose}){
                         </View>
                     )}
                     {address.map((valor,index)=>(
-                        <Pressable key={`${valor.cep}-${index}`} style={styles.card} onPress={()=>{selecionarCEP(valor.logradouro,valor.localidade,valor.uf)}}>
+                        <Pressable key={`${valor.cep}-${index}`} style={styles.card} onPress={()=>{selecionarCEP(valor.logradouro,valor.localidade,valor.uf,valor.cep)}}>
                             <View style={styles.cardTop}>
                                 <Text style={styles.cep}>{valor.cep}</Text>
                                 <Text style={styles.uf}>{valor.uf || "BR"}</Text>

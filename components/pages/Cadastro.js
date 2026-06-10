@@ -1,6 +1,6 @@
 import {View,TextInput,Text,TouchableOpacity} from "react-native"
 import {useNavigation} from '@react-navigation/native'
-import {styles} from "../styles/loginStyles"
+import {styles} from "../styles/cadastroStyles"
 import { SafeAreaView } from "react-native-safe-area-context"
 import PersonIcon from "../icons/PersonIcon"
 import LockIcon from "../icons/LockIcon"
@@ -10,29 +10,40 @@ import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { globalStyles } from "../styles/globalStyles"
+import ErrorMsg from "../layouts/ErrorMsg"
 export default function Cadastro() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
   const [email,setEmail]=useState("")
   const [senha,setSenha]=useState("")
+  const [msg,setMsg]=useState("")
+  const [keyMsg,setKeyMsg]=useState(0)
   async function cadastrar(){
     const emailArm=await AsyncStorage.getItem("email")
+    if(email!=""&&senha!=""){
     if((emailArm&&emailArm==email)||email=="admin@gmail.com"){
-        console.log("Este email já esta sendo utilizado")
+        setMsg("Este email já esta sendo utilizado")
+        setKeyMsg((e)=>e+1)
     }else{
         if(email.includes("@gmail.com")||email.includes("@outlook.com")||email.includes("@faacgedu.org.br")){
-            if(senha.length>=3){
+            if(senha.length>3){
                 await AsyncStorage.setItem("email",email)
                 await AsyncStorage.setItem("senha",senha)
                 navigation.navigate("Home")
             }else{
-                console.log("Sua senha deve possuir mais de 3 caracteres")
+                setMsg("Sua senha deve possuir mais de 3 caracteres")
+                setKeyMsg((e)=>e+1)
             }
         }else{
-            console.log("Email inválido")
+            setMsg("Email inválido")
+            setKeyMsg((e)=>e+1)
         }
     }
+  }else{
+    setMsg("Preencha todos os campos")
+    setKeyMsg((e)=>e+1)
   }
+}
   function verSenha(){
     if(mostrarSenha){
       setMostrarSenha(false)
@@ -77,6 +88,9 @@ export default function Cadastro() {
         <Text>Encontre paradas próximas e chegue no horário certo</Text>
       </View>
     </View>
+    {msg&&(
+      <ErrorMsg key={keyMsg} msg={msg}/>
+    )}
     </SafeAreaView>
   );
 }

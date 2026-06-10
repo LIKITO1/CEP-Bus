@@ -2,8 +2,7 @@ import Menu from "../layouts/Menu"
 import { globalStyles } from "../styles/globalStyles"
 import { styles } from "../styles/homeStyles"
 import {useState,useRef,useEffect} from "react"
-import {View,Text,TextInput,Pressable,ScrollView,Animated,Easing} from "react-native"
-import NotificationIcon from "../icons/NotificationIcon"
+import {View,Text,TextInput,Pressable,ScrollView,Animated} from "react-native"
 import CepIcon from "../icons/CepIcon"
 import ArrowDownIcon from "../icons/ArrowDownIcon"
 import { buscarEnd, buscarCep } from "../../services/viacep"
@@ -105,8 +104,12 @@ export default function Home() {
       setErrorKey((e)=>e+1)
     }
   }
-  function clear(){
+  function clearCep(){
     setCep("")
+  }
+  function clearEnd(){
+    setRua("")
+    setCidade("")
   }
   return(
     <View style={[globalStyles.container,styles.container]}>
@@ -118,7 +121,6 @@ export default function Home() {
           <Text style={styles.text}>Olá, {nameUser}!</Text>
           <Text style={styles.subtext}>Encontre o ônibus mais próximo de você</Text>
         </View>
-        <NotificationIcon/>
       </View>
       <View>
         <Text style={[styles.text,styles.titleSearch,globalStyles.centro]}>Opções de Busca</Text>
@@ -181,7 +183,7 @@ export default function Home() {
                     <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
                   </LinearGradient>
                 </Pressable>
-                <Pressable onPress={clear}>
+                <Pressable onPress={clearCep}>
                   <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
                     <Text style={styles.textBtnMap}>Limpar</Text>
                   </LinearGradient>
@@ -217,11 +219,18 @@ export default function Home() {
               <TextInput placeholder="Digite a cidade..." style={styles.entrada} value={cidade} onChangeText={setCidade}/>
               <Text style={styles.label}>Rua</Text>
               <TextInput placeholder="Digite a rua..." style={styles.entrada} value={rua} onChangeText={setRua}/>
+              <View style={styles.btns}>
               <Pressable onPress={buscaEnd}>
                 <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
                 <Text style={styles.textBtnMap}>Mostrar no mapa</Text>
                 </LinearGradient>
               </Pressable>
+              <Pressable onPress={clearEnd}>
+                <LinearGradient colors={["#5AB2FF","#3B82F6"]} start={{x:0,y:1}} style={styles.btnMap}>
+                <Text style={styles.textBtnMap}>Limpar</Text>
+                </LinearGradient>
+              </Pressable>
+              </View>
             </View>
           )}
         </ScrollView>
