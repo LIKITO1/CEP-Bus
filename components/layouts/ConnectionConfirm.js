@@ -2,7 +2,6 @@ import {View,Text} from "react-native"
 import {useState,useEffect} from "react"
 import { testaAPI } from "../../services/testaAPI"
 import {styles} from "../styles/connectionStyles"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 export default function ConnectionConfirm(){
     const [msg,setMsg]=useState("Conectando-se ao servidor")
     const [ball,setBall]=useState("waiting")
@@ -16,9 +15,7 @@ export default function ConnectionConfirm(){
                 throw new Error("Problema na conexão")
             }
             setBall("conected")
-            await AsyncStorage.setItem("servidor",true)
         }catch(err){
-            await AsyncStorage.setItem("servidor",false)
             setBall("disconnected")
             setMsg("Problema na conexão")
         }

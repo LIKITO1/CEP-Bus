@@ -11,8 +11,8 @@ export default function Loading(){
                 duration:500,
                 easing:Easing.linear,
                 useNativeDriver:false
-            }).start()
-        )
+            })
+        ).start()
     },[])
     const rodar=animation.interpolate({
         inputRange:[0,1],

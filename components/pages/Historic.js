@@ -9,9 +9,12 @@ import Feather from '@expo/vector-icons/Feather'
 import { useNavigation, useFocusEffect } from "@react-navigation/native"
 import { buscarEnd } from "../../services/viacep"
 import { buscarCoordenadas } from "../../services/geocode"
+import ErrorMsg from "../layouts/ErrorMsg"
 export default function Historic() {
     const [historico, setHistorico] = useState([])
     const [favoritando, setFavoritando] = useState(null)
+    const [msg,setMsg]=useState("")
+    const [keyMsg,setKeyMsg]=useState(0)
     const navigation = useNavigation()
     async function verHistorico() {
         const data = await AsyncStorage.getItem("historico")
@@ -59,12 +62,19 @@ export default function Historic() {
         try {
             const res = await buscarEnd(cep)
             const end = (res.logradouro || "") + " " + res.localidade + " " + res.uf
-            const coords = await buscarCoordenadas(end)
+            const coordenadas = await buscarCoordenadas(end)
             const latitude = coords[0].lat
             const longitude = coords[0].lon
+            if(!coordenadas||coordenadas.length==0){
+                setMsg("Coordenadas não recebidas")
+                setKeyMsg((e)=>e+1)
+                return
+              }
             navigation.navigate("Map", { latitude, longitude })
         } catch (err) {
             console.log("Erro ao navegar:", err)
+            setMsg("Erro ao tentar mostrar coordenadas")
+            setKeyMsg((e)=>e+1)
         }
     }
     function formatarCep(cep) {
@@ -74,6 +84,9 @@ export default function Historic() {
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F4F8FF' }}>
+            {msg&&(
+                <ErrorMsg msg={msg} key={keyMsg}/>
+            )}
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
@@ -89,7 +102,6 @@ export default function Historic() {
                         </Pressable>
                     )}
                 </View>
-
                 <ScrollView
                     style={styles.scrollView}
                     contentContainerStyle={styles.scrollContent}
@@ -100,17 +112,11 @@ export default function Historic() {
                                 <AntDesign name="clockcircleo" size={50} color="#5AB2FF"/>
                             </View>
                             <Text style={styles.emptyTitle}>Nenhum histórico</Text>
-                            <Text style={styles.emptyText}>
-                                Suas buscas aparecerão aqui
-                            </Text>
+                            <Text style={styles.emptyText}>Suas buscas aparecerão aqui</Text>
                         </View>
                     ) : (
                         historico.map((valor, index) => (
-                            <Pressable
-                                key={index}
-                                style={styles.item}
-                                onPress={() => navegarParaMapa(valor)}
-                            >
+                            <Pressable key={index} style={styles.item} onPress={() => navegarParaMapa(valor)}>
                                 <View style={styles.itemLeft}>
                                     <View style={styles.iconCircle}>
                                         <AntDesign name="history" size={22} color="#3B82F6" />
@@ -121,21 +127,10 @@ export default function Historic() {
                                     </View>
                                 </View>
                                 <View style={styles.itemRight}>
-                                    <TouchableOpacity
-                                        style={[styles.actionBtn, styles.starBtn]}
-                                        onPress={() => adicionarFavorito(valor, index)}
-                                        disabled={favoritando === index}
-                                    >
-                                        <Feather
-                                            name={favoritando === index ? "loader" : "star"}
-                                            size={16}
-                                            color="#F59E0B"
-                                        />
+                                    <TouchableOpacity style={[styles.actionBtn, styles.starBtn]} onPress={() => adicionarFavorito(valor, index)} disabled={favoritando === index}>
+                                        <Feather name={favoritando === index ? "loader" : "star"} size={16} color="#F59E0B"/>
                                     </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.actionBtn, styles.deleteBtn]}
-                                        onPress={() => removerItem(index)}
-                                    >
+                                    <TouchableOpacity style={[styles.actionBtn, styles.deleteBtn]} onPress={() => removerItem(index)} >
                                     <Feather name="trash-2" size={16} color="#EF4444" />
                                     </TouchableOpacity>
                                     <Feather name="chevron-right" size={20} color="#94A3B8" />

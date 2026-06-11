@@ -27,14 +27,18 @@ export async function buscarParadas(latitude,longitude){
     console.log("Erro na API 1")
   }
   try{
-    const response1 = await fetch("https://lz4.overpass-api.de/api/interpreter",{
+    const response = await fetch("https://lz4.overpass-api.de/api/interpreter",{
           method:"POST",
           body: query
       })
-      const res1=await response1.text()
-      const res=JSON.parse(res1)
-      return res.elements || []
+      const text=await response.text()
+      const res=JSON.parse(text)
+      if(res.elements?.length>0){
+        await AsyncStorage.setItem(coordenada,JSON.stringify(res.elements))
+        return res.elements
+      }
     }catch(err){
       console.log("Erro nas duas APIs")
+      return []
     }
   }

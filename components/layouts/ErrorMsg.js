@@ -5,9 +5,10 @@ import {styles} from "../styles/errorStyles"
 export default function ErrorMsg({ msg }) {
   const [mostrar,setMostrar]=useState(true)
   useEffect(()=>{
-    setInterval(()=>{
+    const interval=setInterval(()=>{
       setMostrar(false)
     },1000)
+    return ()=>clearInterval(interval)
   },[])
   return (
     <>

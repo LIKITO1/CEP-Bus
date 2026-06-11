@@ -26,7 +26,7 @@ export default function App(){
   return (
     <NavigationContainer linking={linking}>
       <View style={{flex:1,paddingTop:25}}>
-      <Stack.Navigator initialMapName='Login' screenOptions={{headerShown:false}}>
+      <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown:false}}>
         <Stack.Screen name='Login' component={Login}/>
         <Stack.Screen name='Home' component={Home}/>
         <Stack.Screen name='Map' component={Map}/>

@@ -10,6 +10,7 @@ import ClosedEyeIcon from "../icons/ClosedEyeIcon"
 import {LinearGradient} from "expo-linear-gradient"
 import Checkbox from "expo-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import ErrorMsg from "../layouts/ErrorMsg"
 import { globalStyles } from "../styles/globalStyles"
 export default function Login() {
   const navigation=useNavigation()
@@ -17,6 +18,8 @@ export default function Login() {
   const [email,setEmail]=useState("")
   const [senha,setSenha]=useState("")
   const [check,setCheck]=useState(false)
+  const [msg,setMsg]=useState("")
+  const [keyMsg,setKeyMsg]=useState(0)
   async function logar(){
     const emailArm=await AsyncStorage.getItem("email")
     const senhaArm=await AsyncStorage.getItem("senha")
@@ -25,20 +28,21 @@ export default function Login() {
         if(senha==senhaArm){
           navigation.navigate("Home")
         }else{
-          console.log("Senha incorreta")
+          setMsg("Senha incorreta")
+          setKeyMsg((e)=>e+1)
         }
-      }else{
-        return;
       }
     }else{
       if(email=="admin@gmail.com"){
         if(senha=="admin"){
           navigation.navigate("Home")
         }else{
-          console.log("Senha incorreta")
+          setMsg("Senha incorreta")
+          setKeyMsg((e)=>e+1)
         }
       }else{
-        console.log("Email inválido")
+        setMsg("Email inválido")
+        setKeyMsg((e)=>e+1)
       }
     }
   }
@@ -55,6 +59,9 @@ export default function Login() {
   return (
     <SafeAreaView style={{flex:1}}>
     <View style={globalStyles.container}>
+      {msg&&(
+        <ErrorMsg msg={msg} key={keyMsg}/>
+      )}
       <View style={[styles.form,globalStyles.centro]}>
         <Text style={styles.titulo}>Bem-Vindo de Volta</Text>
         <Text style={styles.subtext}>Faça login para continuar</Text>

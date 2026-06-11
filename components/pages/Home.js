@@ -29,7 +29,7 @@ export default function Home() {
   const [mostrarEnds,setMostrarEnds]=useState(false)
   const [enderecos,setEnderecos]=useState(null)
   const [msg,setMsg]=useState("")
-  const [errorKey,setErrorKey]=useState(0)
+  const [keyMsg,setKeyMsg]=useState(0)
   useEffect(() => {
     Animated.spring(slideAnim,{
       toValue:selected === "CEP" ? 0 : 1,
@@ -63,7 +63,8 @@ export default function Home() {
   }
   async function buscaEnd(){
     if(rua === "" || cidade === ""){
-      console.log("Preencha todos os campos")
+      setMsg("Preencha todos os campos")
+      setKeyMsg((e)=>e+1)
       return
     }
     try{
@@ -72,6 +73,7 @@ export default function Home() {
       setEnderecos(res)
     }catch(err){
       setMsg("Erro: "+err.message)
+      setKeyMsg((e)=>e+1)
     }
   }
   async function buscaCep(){
@@ -88,6 +90,11 @@ export default function Home() {
       }
       const enderecoCompleto =res.logradouro +" " +res.localidade +" " +res.uf
       const coordenadas=await buscarCoordenadas(enderecoCompleto)
+      if(!coordenadas||coordenadas.length==0){
+        setMsg("Coordenadas não recebidas")
+        setKeyMsg((e)=>e+1)
+        return
+      }
       const latitude=coordenadas[0].lat
       const longitude=coordenadas[0].lon
       setCoords({
@@ -101,7 +108,7 @@ export default function Home() {
     }
     }catch(err){
       setMsg(err.message)
-      setErrorKey((e)=>e+1)
+      setKeyMsg((e)=>e+1)
     }
   }
   function clearCep(){
@@ -114,7 +121,7 @@ export default function Home() {
   return(
     <View style={[globalStyles.container,styles.container]}>
       {!!msg&&(
-        <ErrorMsg msg={msg} key={errorKey}/>
+        <ErrorMsg msg={msg} key={keyMsg}/>
       )}
       <View style={styles.containerOne}>
         <View>

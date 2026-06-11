@@ -48,6 +48,7 @@ export default function Map({route}){
   const [temperatura,setTemperatura]=useState(null)
   const [erroLocation,setErroLocation]=useState(false)
   const [msg,setMsg]=useState("")
+  const [keyMsg,setKeyMsg]=useState(0)
   const mapRef=useRef(null)
   const latitudeCEP=locationCEP?.latitude ?? null
   const longitudeCEP=locationCEP?.longitude ?? null
@@ -76,30 +77,31 @@ export default function Map({route}){
   }
   async function pegarPosition(){
     try{
-      setMsg("")
       const {status}=await Location.requestForegroundPermissionsAsync()
       if(status=="granted"){
         const atualLocation=await Location.getCurrentPositionAsync({})
         setLocation(atualLocation.coords)
         setErroLocation(false)
       }else{
-        setMsg("Permissao de localização negada. Ative a permissão para ver sua posição no mapa.")
+        setMsg("Permissão de localização negada. Ative a permissão para ver sua posição no mapa.")
+        setKeyMsg((e)=>e+1)
         setErroLocation(true)
       }
     }catch(err){
-      setMsg("Nao foi possivel obter sua localizacao agora. Tente novamente.")
+      setMsg("Não foi possivel obter sua localização agora. Tente novamente.")
+      setKeyMsg((e)=>e+1)
       setErroLocation(true)
     }
   }
   async function carregarDados(){
     if(route.params){
       try{
-      setMsg("")
       const {longitude,latitude}=route.params
       const latitudeNumero=Number(latitude)
       const longitudeNumero=Number(longitude)
       if(Number.isNaN(latitudeNumero)||Number.isNaN(longitudeNumero)){
         setMsg("Coordenadas invalidas para abrir o mapa.")
+        setKeyMsg((e)=>e+1)
         setErroLocation(true)
         return
       }
@@ -113,7 +115,8 @@ export default function Map({route}){
         buscarClima(latitudeNumero,longitudeNumero)
       ])
       if(temperatura?.msg){
-        console.log(temperatura.msg)
+        setMsg(temperatura.msg)
+        setKeyMsg((e)=>e+1)
       }
       const pontosComDistancia=Array.isArray(pontos)?pontos.map((valor)=>{
         const distancia=L.latLng(latitudeNumero,longitudeNumero).distanceTo(L.latLng(valor.lat,valor.lon))
@@ -124,7 +127,8 @@ export default function Map({route}){
       setTemperatura(temperatura?.temperatura ?? null)
       }catch(err){
         console.log("Erro ao carregar dados do mapa: " + err)
-        setMsg("Nao foi possivel carregar paradas e clima. O mapa ainda pode ser usado.")
+        setMsg("Não foi possível carregar paradas e clima")
+        setKeyMsg((e)=>e+1)
         setPontos([])
       }
     }
@@ -151,6 +155,10 @@ export default function Map({route}){
         const resultados=await Promise.allSettled(
           pontosProximos.map(async (ponto)=>{
             const res=await rotaAPe(locationCEP.latitude,locationCEP.longitude,ponto.lat,ponto.lon)
+            if(res.msg){
+              setMsg(res.msg)
+              return;
+            }
             return {...res,ponto}
           })
         )
@@ -179,7 +187,8 @@ export default function Map({route}){
           setPontoMaisProximo(null)
         }
     }else{
-      setMsg()
+      setMsg("Pontos de ônibus não encontrados")
+      setKeyMsg((e)=>e+1)
     }
   }
   rotaMaisProximo()

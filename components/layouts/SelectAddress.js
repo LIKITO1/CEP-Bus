@@ -14,23 +14,28 @@ export default function SelectAddress({enderecos,onClose}){
     const [msgKey,setMsgKey]=useState(0)
     const navigation=useNavigation()
     async function selecionarCEP(logradouro,localidade,uf,cep){
-        let enderecoCompleto=logradouro+" "+localidade+" "+uf
-        const coordenadas=await buscarCoordenadas(enderecoCompleto)
-        const historico=await AsyncStorage.getItem("historico")
-        if(historico == null){
-            await AsyncStorage.setItem("historico",JSON.stringify([cep]))
-          }else{
-            const novoHistorico=JSON.parse(historico)
-            novoHistorico.push(cep)
-            await AsyncStorage.setItem("historico",JSON.stringify(novoHistorico))
-          }
-        if(coordenadas.length>0){
-            const latitude=String(coordenadas[0].lat)
-            const longitude=String(coordenadas[0].lon)
-            navigation.navigate("Map",{latitude,longitude})
-        }else{
+        try{
+            let enderecoCompleto=logradouro+" "+localidade+" "+uf
+            const coordenadas=await buscarCoordenadas(enderecoCompleto)
+            const historico=await AsyncStorage.getItem("historico")
+            if(historico == null){
+                await AsyncStorage.setItem("historico",JSON.stringify([cep]))
+            }else{
+                const novoHistorico=JSON.parse(historico)
+                novoHistorico.push(cep)
+                await AsyncStorage.setItem("historico",JSON.stringify(novoHistorico))
+            }
+            if(coordenadas||coordenadas.length>0){
+                const latitude=String(coordenadas[0].lat)
+                const longitude=String(coordenadas[0].lon)
+                navigation.navigate("Map",{latitude,longitude})
+            }else{
+                setMsgKey((e)=>e+1)
+                setMsg("Local não registrado na API")
+            }
+        }catch(err){
+            setMsg("Erro ao tentar buscar as coordenadas dos pontos")
             setMsgKey((e)=>e+1)
-            setMsg("Local não registrado na API")
         }
     }
     useEffect(()=>{
