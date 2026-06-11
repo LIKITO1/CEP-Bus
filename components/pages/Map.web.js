@@ -46,7 +46,6 @@ export default function Map({route}){
   const [locationCEP,setLocationCEP]=useState(null)
   const [pontos,setPontos]=useState([])
   const [temperatura,setTemperatura]=useState(null)
-  const [erroLocation,setErroLocation]=useState(false)
   const [msg,setMsg]=useState("")
   const [keyMsg,setKeyMsg]=useState(0)
   const mapRef=useRef(null)
@@ -54,43 +53,39 @@ export default function Map({route}){
   const longitudeCEP=locationCEP?.longitude ?? null
   const latitudeMapa = latitudeCEP ?? location?.latitude
   const longitudeMapa = longitudeCEP ?? location?.longitude
-  const temCEP=route.params!=null
-  const carregando = temCEP?locationCEP == null && msg === "": location == null && !erroLocation
+  const [carregando,setCarregando] = useState(false)
   const [rota,setRota]=useState(null)
-  const [tempo,setTempo]=useState(null)
   const [pontoMaisProximo,setPontoMaisProximo]=useState(null)
-  function centralizar(){
-    if(location&&mapRef.current){
+  function centralizar(posicao){
+    if(!posicao||!mapRef.current) return
     mapRef.current.setView([
-      location.latitude,
-      location.longitude
+      posicao.latitude,
+      posicao.longitude
     ],18)
   }
+  function mostrarErro(erro){
+    setMsg(erro)
+    setKeyMsg((e)=>e+1)
   }
-  function centralizarCEP(){
-    if(locationCEP&&mapRef.current){
-      mapRef.current.setView([
-        locationCEP.latitude,
-        locationCEP.longitude
-      ],18)
-    }
+  function clearMap(){
+    setPontos([])
+    setRota(null)
+    setPontoMaisProximo(null)
   }
   async function pegarPosition(){
     try{
+      setCarregando(true)
       const {status}=await Location.requestForegroundPermissionsAsync()
       if(status=="granted"){
         const atualLocation=await Location.getCurrentPositionAsync({})
         setLocation(atualLocation.coords)
-        setErroLocation(false)
       }else{
-        setMsg("Permissão de localização negada. Ative a permissão para ver sua posição no mapa.")
-        setKeyMsg((e)=>e+1)
-        setErroLocation(true)
+        mostrarErro("Permissão de localização negada. Ative a permissão para ver sua posição no mapa.")
       }
     }catch(err){
-      setMsg("Não foi possivel obter sua localização agora. Tente novamente.")
-      setKeyMsg((e)=>e+1)
-      setErroLocation(true)
+      mostrarErro("Não foi possivel obter sua localização agora. Tente novamente.")
+    }finally{
+      setCarregando(false)
     }
   }
   async function carregarDados(){
@@ -100,23 +95,19 @@ export default function Map({route}){
       const latitudeNumero=Number(latitude)
       const longitudeNumero=Number(longitude)
       if(Number.isNaN(latitudeNumero)||Number.isNaN(longitudeNumero)){
-        setMsg("Coordenadas invalidas para abrir o mapa.")
-        setKeyMsg((e)=>e+1)
-        setErroLocation(true)
+        mostrarErro("Coordenadas invalidas para abrir o mapa.")
+        setCarregando(false)
         return
       }
       setLocationCEP({latitude:latitudeNumero,longitude:longitudeNumero})
-      setErroLocation(false)
-      setRota(null)
-      setTempo(null)
-      setPontoMaisProximo(null)
+      clearMap()
       const [pontos,temperatura]=await Promise.all([
         buscarParadas(latitudeNumero,longitudeNumero),
         buscarClima(latitudeNumero,longitudeNumero)
       ])
       if(temperatura?.msg){
-        setMsg(temperatura.msg)
-        setKeyMsg((e)=>e+1)
+        mostrarErro(temperatura.msg)
+        setCarregando(false)
       }
       const pontosComDistancia=Array.isArray(pontos)?pontos.map((valor)=>{
         const distancia=L.latLng(latitudeNumero,longitudeNumero).distanceTo(L.latLng(valor.lat,valor.lon))
@@ -125,38 +116,51 @@ export default function Map({route}){
       pontosComDistancia.sort((a,b)=>a.distancia-b.distancia)
       setPontos(pontosComDistancia)
       setTemperatura(temperatura?.temperatura ?? null)
+      setCarregando(false)
       }catch(err){
         console.log("Erro ao carregar dados do mapa: " + err)
-        setMsg("Não foi possível carregar paradas e clima")
-        setKeyMsg((e)=>e+1)
+        mostrarErro("Não foi possível carregar paradas e clima")
         setPontos([])
+        setCarregando(false)
       }
     }
   }
-  function tentarNovamente(){
-    setErroLocation(false)
+  async function tentarNovamente(){
     setMsg("")
-    setPontos([])
-    setRota(null)
-    setTempo(null)
-    setPontoMaisProximo(null)
-    pegarPosition()
-    carregarDados()
+    clearMap()
+    setCarregando(true)
+    try{
+      await pegarPosition()
+      if(route.params){
+        await carregarDados()
+      }
+    }finally{
+      setCarregando(false)
+    }
   }
   useEffect(()=>{
-    pegarPosition()
-    carregarDados()
+    async function iniciar(){
+      await pegarPosition()
+      if(route.params){
+        await carregarDados()
+      }
+    }
+    iniciar()
   },[])
   useEffect(()=>{
     async function rotaMaisProximo(){
-      if(locationCEP&&Array.isArray(pontos)&&pontos.length>0){
+      if(!locationCEP) return
+      if(pontos.length==0){
+        mostrarErro("Pontos de ônibus não encontrados")
+        return
+      }
         try{
         const pontosProximos=pontos.slice(0,3)
         const resultados=await Promise.allSettled(
           pontosProximos.map(async (ponto)=>{
             const res=await rotaAPe(locationCEP.latitude,locationCEP.longitude,ponto.lat,ponto.lon)
             if(res.msg){
-              setMsg(res.msg)
+              mostrarErro(res.msg)
               return;
             }
             return {...res,ponto}
@@ -167,29 +171,22 @@ export default function Map({route}){
           .map((resultado)=>resultado.value)
           .filter((valor)=>valor&&typeof valor.distancia==="number")
         if(rotasValidas.length===0){
-          setRota(null)
-          setTempo(null)
-          setPontoMaisProximo(null)
+          clearMap()
           return
         }
         const maisProxima=rotasValidas.sort((a,b)=>a.distancia-b.distancia)[0]
-        setTempo(Math.round(maisProxima.tempo/60))
         setRota(maisProxima.rota)
         setPontoMaisProximo({
           ...maisProxima.ponto,
           distanciaRota:Math.round(maisProxima.distancia),
           tempoRota:Math.round(maisProxima.tempo/60)
         })
+        setCarregando(false)
         }catch(err){
           console.log("Erro ao buscar rota a pé: " + err)
-          setRota(null)
-          setTempo(null)
-          setPontoMaisProximo(null)
+          clearMap()
+          setCarregando(false)
         }
-    }else{
-      setMsg("Pontos de ônibus não encontrados")
-      setKeyMsg((e)=>e+1)
-    }
   }
   rotaMaisProximo()
   },[pontos,locationCEP])
@@ -250,11 +247,11 @@ export default function Map({route}){
         ) : null}
       </MapContainer>
       <View style={styles.btnsLocalization}>
-        <TouchableOpacity onPress={centralizar} style={[styles.btn,{backgroundColor:'#2563EB'}]}>
+        <TouchableOpacity onPress={()=>centralizar(location)} style={[styles.btn,{backgroundColor:'#2563EB'}]}>
           <Text style={styles.textoBtn}>Onde estou?</Text>
         </TouchableOpacity>
         {(latitudeCEP!=null&&longitudeCEP!=null)&&(
-        <TouchableOpacity onPress={centralizarCEP} style={[styles.btn,{backgroundColor:'#1D4ED8'}]}>
+        <TouchableOpacity onPress={()=>centralizar(locationCEP)} style={[styles.btn,{backgroundColor:'#1D4ED8'}]}>
           <Text style={styles.textoBtn}>CEP selecionado</Text>
         </TouchableOpacity>
         )}
@@ -268,7 +265,7 @@ export default function Map({route}){
         <View style={styles.feedback}>
           <Text style={styles.feedbackTitle}>Mapa indisponivel</Text>
           {msg&&(
-            <ErrorMsg msg={msg}/>
+            <ErrorMsg msg={msg} key={keyMsg}/>
           )}
           <TouchableOpacity onPress={tentarNovamente} style={styles.feedbackButton}>
             <Text style={styles.feedbackButtonText}>Tentar novamente</Text>
@@ -276,9 +273,9 @@ export default function Map({route}){
         </View>
       )}
       <Menu/>
-      {carregando ? (
+      {carregando &&(
         <Loading/>
-      ) : null}
+      )}
       </View>
     </SafeAreaView>
   )

@@ -12,7 +12,7 @@ export default function ConnectionConfirm(){
             const res=await testaAPI()
             setMsg(res.msg)
             if(!res.msg){
-                throw new Error("Problema na conexão")
+                throw new Error("Problema na conexão. Recarregue a página ou aguarde")
             }
             setBall("conected")
         }catch(err){

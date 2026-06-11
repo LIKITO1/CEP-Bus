@@ -12,6 +12,7 @@ import Checkbox from "expo-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import ErrorMsg from "../layouts/ErrorMsg"
 import { globalStyles } from "../styles/globalStyles"
+import { ImageBackground } from "react-native-web"
 export default function Login() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
@@ -58,7 +59,7 @@ export default function Login() {
   }
   return (
     <SafeAreaView style={{flex:1}}>
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container,globalStyles.centro]}>
       {msg&&(
         <ErrorMsg msg={msg} key={keyMsg}/>
       )}
@@ -94,10 +95,6 @@ export default function Login() {
         <TouchableOpacity style={{width:'100%'}}>
           <Text style={styles.btnConta} onPress={redirectCadastro}>Não tenho conta? <Text style={{color:'blue',fontWeight:600}}>Cadastre-se</Text></Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.baixo}>
-        <Text style={styles.titulo}>Roteiro perfeito</Text>
-        <Text>Encontre paradas próximas e chegue no horário certo</Text>
       </View>
     </View>
     </SafeAreaView>

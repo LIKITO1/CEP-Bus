@@ -1,20 +1,11 @@
 import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     form:{
-      width:"100%",
+      width:"90%",
       height:"60%",
-      borderWidth:1,
-      borderColor:"black",
-      borderBottomEndRadius:30,
-      borderBottomStartRadius:30,
-      zIndex:1
-    },
-    baixo:{
-      height:"40%",
-      width:"100%",
-      display:"flex",
-      alignItems:"center",
-      justifyContent:"end"
+      zIndex:1,
+      boxShadow:'0px 0px 15px 2px rgba(0,0,0,0.5)',
+      borderRadius:20
     },
     textInput:{
       padding:10,
@@ -72,7 +63,7 @@ export const styles = StyleSheet.create({
       marginHorizontal:'auto',
       textAlign:'center',
       fontWeight:500,
-      fontSize:17,
+      fontSize:16.5,
       borderWidth:1.5,
       borderColor:'blue',
       borderRadius:10,

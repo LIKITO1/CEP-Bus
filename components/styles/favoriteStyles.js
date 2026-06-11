@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native"
-
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -61,10 +60,7 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 18,
         marginBottom: 14,
-        shadowColor: '#3B82F6',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
+        boxShadow:'0px 4px 12px rgba(59,130,246,0.08)',
         elevation: 3,
     },
     cardTop: {

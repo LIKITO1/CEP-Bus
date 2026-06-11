@@ -56,7 +56,7 @@ export default function Cadastro() {
   }
   return (
     <SafeAreaView style={{flex:1}}>
-    <View style={styles.container}>
+    <View style={[styles.container,globalStyles.centro]}>
       <View style={[styles.form,globalStyles.centro]}>
         <Text style={styles.titulo}>Seja Bem Vindo</Text>
         <Text style={styles.subtext}>Realize o cadastro para acessar a plataforma</Text>
@@ -82,10 +82,6 @@ export default function Cadastro() {
         <TouchableOpacity style={{width:'100%'}}>
           <Text style={styles.btnConta} onPress={redirectLogar}>Já tem conta?<Text style={{color:'blue',fontWeight:600}}> Efetuar login</Text></Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.baixo}>
-        <Text style={styles.titulo}>Roteiro perfeito</Text>
-        <Text>Encontre paradas próximas e chegue no horário certo</Text>
       </View>
     </View>
     {msg&&(
