@@ -16,7 +16,6 @@ export default function Home() {
   const navigation = useNavigation()
   const [nameUser] = useState("Admin")
   const [cep, setCep] = useState("")
-  const [coords, setCoords] = useState(null)
   const [selected, setSelected] = useState("CEP")
   const [openList, setOpenList] = useState(false)
   const [estadoSelecionado, setEstadoSelecionado] = useState("SP")
@@ -97,10 +96,6 @@ export default function Home() {
       }
       const latitude=coordenadas[0].lat
       const longitude=coordenadas[0].lon
-      setCoords({
-        latitude:String(latitude),
-        longitude:String(longitude)
-      })
       navigation.navigate("Map",{latitude,longitude})
     }
     else{

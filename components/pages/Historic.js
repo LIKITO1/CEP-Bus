@@ -16,15 +16,18 @@ export default function Historic() {
     const [msg,setMsg]=useState("")
     const [keyMsg,setKeyMsg]=useState(0)
     const navigation = useNavigation()
+    //Função para ver se existe algo no histórico
     async function verHistorico() {
         const data = await AsyncStorage.getItem("historico")
         setHistorico(data ? JSON.parse(data) : [])
+        //Se tiver algo, converta para um objeto manipulável, se não, retorne um array vazio
     }
     useFocusEffect(
         useCallback(() => {
             verHistorico()
         }, [])
     )
+    //Função para remover o histórico por completo
     async function limparHistorico() {
         await AsyncStorage.removeItem("historico")
         setHistorico([])
@@ -60,18 +63,25 @@ export default function Historic() {
     }
     async function navegarParaMapa(cep) {
         try {
+            //Fazendo uma requisição na service do viacep para buscar o endereço
             const res = await buscarEnd(cep)
-            const end = (res.logradouro || "") + " " + res.localidade + " " + res.uf
+            //Salvando o endereço em uma array
+            const end = res.logradouro + " " + res.localidade + " " + res.uf
+            //Buscando as coordenadas deste endereço
             const coordenadas = await buscarCoordenadas(end)
+            //Se não encontrar, define uma mensagem de erro e sai da função
             if(!coordenadas||coordenadas.length==0){
                 setMsg("Coordenadas não recebidas")
                 setKeyMsg((e)=>e+1)
                 return
               }
+              //Se não der erro, define latitude e longitude como as coordenadas recebidas
             const latitude = coordenadas[0].lat
             const longitude = coordenadas[0].lon
+            //Vai para a página de Mapa, passando latitude e longitude
             navigation.navigate("Map", { latitude, longitude })
         } catch (err) {
+            //Se algo quebrar, vai aparecer uma mensagem de erro para o usuário
             console.log("Erro ao navegar:", err)
             setMsg("Erro ao tentar mostrar coordenadas")
             setKeyMsg((e)=>e+1)
