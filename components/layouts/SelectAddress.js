@@ -25,7 +25,7 @@ export default function SelectAddress({enderecos,onClose}){
                 novoHistorico.push(cep)
                 await AsyncStorage.setItem("historico",JSON.stringify(novoHistorico))
             }
-            if(coordenadas||coordenadas.length>0){
+            if(coordenadas&&coordenadas.length>0){
                 const latitude=String(coordenadas[0].lat)
                 const longitude=String(coordenadas[0].lon)
                 navigation.navigate("Map",{latitude,longitude})

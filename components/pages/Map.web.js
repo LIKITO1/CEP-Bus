@@ -66,6 +66,7 @@ export default function Map({route}){
   function mostrarErro(erro){
     setMsg(erro)
     setKeyMsg((e)=>e+1)
+    setCarregando(false)
   }
   function clearMap(){
     setPontos([])
@@ -91,36 +92,36 @@ export default function Map({route}){
   async function carregarDados(){
     if(route.params){
       try{
-      const {longitude,latitude}=route.params
-      const latitudeNumero=Number(latitude)
-      const longitudeNumero=Number(longitude)
-      if(Number.isNaN(latitudeNumero)||Number.isNaN(longitudeNumero)){
-        mostrarErro("Coordenadas invalidas para abrir o mapa.")
-        setCarregando(false)
-        return
-      }
-      setLocationCEP({latitude:latitudeNumero,longitude:longitudeNumero})
-      clearMap()
-      const [pontos,temperatura]=await Promise.all([
-        buscarParadas(latitudeNumero,longitudeNumero),
-        buscarClima(latitudeNumero,longitudeNumero)
-      ])
-      if(temperatura?.msg){
-        mostrarErro(temperatura.msg)
-        setCarregando(false)
-      }
-      const pontosComDistancia=Array.isArray(pontos)?pontos.map((valor)=>{
-        const distancia=L.latLng(latitudeNumero,longitudeNumero).distanceTo(L.latLng(valor.lat,valor.lon))
-        return {...valor,distancia:Math.round(distancia)}
-      }):[]
-      pontosComDistancia.sort((a,b)=>a.distancia-b.distancia)
-      setPontos(pontosComDistancia)
-      setTemperatura(temperatura?.temperatura ?? null)
-      setCarregando(false)
+        setCarregando(true)
+        const {longitude,latitude}=route.params
+        const latitudeNumero=Number(latitude)
+        const longitudeNumero=Number(longitude)
+        if(Number.isNaN(latitudeNumero)||Number.isNaN(longitudeNumero)){
+          mostrarErro("Coordenadas invalidas para abrir o mapa.")
+          return
+        }
+        setLocationCEP({latitude:latitudeNumero,longitude:longitudeNumero})
+        clearMap()
+        const [pontos,temperatura]=await Promise.all([
+          buscarParadas(latitudeNumero,longitudeNumero),
+          buscarClima(latitudeNumero,longitudeNumero)
+        ])
+        if(temperatura?.msg){
+          mostrarErro(temperatura.msg)
+          return
+        }
+        const pontosComDistancia=Array.isArray(pontos)?pontos.map((valor)=>{
+          const distancia=L.latLng(latitudeNumero,longitudeNumero).distanceTo(L.latLng(valor.lat,valor.lon))
+          return {...valor,distancia:Math.round(distancia)}
+        }):[]
+        pontosComDistancia.sort((a,b)=>a.distancia-b.distancia)
+        setPontos(pontosComDistancia)
+        setTemperatura(temperatura?.temperatura ?? null)
       }catch(err){
         console.log("Erro ao carregar dados do mapa: " + err)
         mostrarErro("Não foi possível carregar paradas e clima")
         setPontos([])
+      }finally{
         setCarregando(false)
       }
     }
@@ -155,36 +156,37 @@ export default function Map({route}){
         return
       }
         try{
-        const pontosProximos=pontos.slice(0,3)
-        const resultados=await Promise.allSettled(
-          pontosProximos.map(async (ponto)=>{
-            const res=await rotaAPe(locationCEP.latitude,locationCEP.longitude,ponto.lat,ponto.lon)
-            if(res.msg){
-              mostrarErro(res.msg)
-              return;
-            }
-            return {...res,ponto}
+          setCarregando(true)
+          const pontosProximos=pontos.slice(0,3)
+          const resultados=await Promise.allSettled(
+            pontosProximos.map(async (ponto)=>{
+              const res=await rotaAPe(locationCEP.latitude,locationCEP.longitude,ponto.lat,ponto.lon)
+              if(res.msg){
+                mostrarErro(res.msg)
+                return;
+              }
+              return {...res,ponto}
+            })
+          )
+          const rotasValidas=resultados
+            .filter((resultado)=>resultado.status==="fulfilled")
+            .map((resultado)=>resultado.value)
+            .filter((valor)=>valor&&typeof valor.distancia==="number")
+          if(rotasValidas.length===0){
+            clearMap()
+            return
+          }
+          const maisProxima=rotasValidas.sort((a,b)=>a.distancia-b.distancia)[0]
+          setRota(maisProxima.rota)
+          setPontoMaisProximo({
+            ...maisProxima.ponto,
+            distanciaRota:Math.round(maisProxima.distancia),
+            tempoRota:Math.round(maisProxima.tempo/60)
           })
-        )
-        const rotasValidas=resultados
-          .filter((resultado)=>resultado.status==="fulfilled")
-          .map((resultado)=>resultado.value)
-          .filter((valor)=>valor&&typeof valor.distancia==="number")
-        if(rotasValidas.length===0){
-          clearMap()
-          return
-        }
-        const maisProxima=rotasValidas.sort((a,b)=>a.distancia-b.distancia)[0]
-        setRota(maisProxima.rota)
-        setPontoMaisProximo({
-          ...maisProxima.ponto,
-          distanciaRota:Math.round(maisProxima.distancia),
-          tempoRota:Math.round(maisProxima.tempo/60)
-        })
-        setCarregando(false)
         }catch(err){
           console.log("Erro ao buscar rota a pé: " + err)
           clearMap()
+        }finally{
           setCarregando(false)
         }
   }

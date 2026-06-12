@@ -14,7 +14,8 @@ export default function Favorite() {
     const [keyMsg,setKeyMsg]=useState(0)
     const navigation = useNavigation()
     async function carregarFavoritos() {
-        const data = await AsyncStorage.getItem("favoritos")
+        const dataString = await AsyncStorage.getItem("favoritos")
+        const data=JSON.parse(dataString)
         if(data){
             setFavoritos(data)
         }
@@ -25,7 +26,7 @@ export default function Favorite() {
         }, [])
     )
     async function removerFavorito(index) {
-        const novos = favoritos.filter((_, i) => i !== index)
+        const novos = favoritos.filter((a,i) => i !== index)
         await AsyncStorage.setItem("favoritos", JSON.stringify(novos))
         setFavoritos(novos)
     }
@@ -58,7 +59,6 @@ export default function Favorite() {
                         {favoritos.length} {favoritos.length === 1 ? 'local salvo' : 'locais salvos'}
                     </Text>
                 </View>
-
                 <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
                     {favoritos.length === 0?(
                         <View style={styles.emptyContainer}>
@@ -68,8 +68,7 @@ export default function Favorite() {
                             <Text style={styles.emptyTitle}>Sem favoritos</Text>
                             <Text style={styles.emptyText}>Adicione locais favoritos pela estrela no histórico de buscas</Text>
                         </View>
-                    ):(
-                        favoritos.map((fav, index) => (
+                    ):(favoritos.map((fav, index) => (
                             <Pressable key={index} style={styles.card} onPress={() => navegarParaMapa(fav)}>
                                 <View style={styles.cardTop}>
                                     <View style={styles.cardLeft}>

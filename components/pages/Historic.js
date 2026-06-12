@@ -63,13 +63,13 @@ export default function Historic() {
             const res = await buscarEnd(cep)
             const end = (res.logradouro || "") + " " + res.localidade + " " + res.uf
             const coordenadas = await buscarCoordenadas(end)
-            const latitude = coords[0].lat
-            const longitude = coords[0].lon
             if(!coordenadas||coordenadas.length==0){
                 setMsg("Coordenadas não recebidas")
                 setKeyMsg((e)=>e+1)
                 return
               }
+            const latitude = coordenadas[0].lat
+            const longitude = coordenadas[0].lon
             navigation.navigate("Map", { latitude, longitude })
         } catch (err) {
             console.log("Erro ao navegar:", err)

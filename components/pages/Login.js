@@ -12,7 +12,6 @@ import Checkbox from "expo-checkbox"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import ErrorMsg from "../layouts/ErrorMsg"
 import { globalStyles } from "../styles/globalStyles"
-import { ImageBackground } from "react-native-web"
 export default function Login() {
   const navigation=useNavigation()
   const [mostrarSenha,setMostrarSenha]=useState(false)
